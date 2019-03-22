@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request,render_template
+from flask import request,render_template,url_for
 import subprocess
 import signal
 import sys
@@ -18,11 +18,39 @@ signal.signal(signal.SIGTSTP,signal_handler_control_z)
 
 @app.route('/')
 def homepage():
+
+	title = "Epic title"
+	paragraph = [ "pargraph1","paragraph222","paragraph333"]
+
 	try:
-		return render_template("index.html", title = "Epic title", paragraph="owowowowowow")
+		return render_template("index.html", title = title, paragraph=paragraph)
 	except Exception as e:
 		return str(e)
 
+
+@app.route('/about')
+def aboutpage():
+
+	title = "About this site"
+	paragraph = [ "pargraph1","paragraph222","paragraph333"]
+	page_type = 'about'
+
+	try:
+		return render_template("index_boot.html", title = title, paragraph=paragraph, page_type=page_type)
+	except Exception as e:
+		return str(e)
+
+@app.route('/about/contact')
+def aboutcontactpage():
+
+	title = "About this site"
+	paragraph = [ "pargraph1","paragraph222","paragraph333"]
+	page_type = 'about'
+
+	try:
+		return render_template("index_boot.html", title = title, paragraph=paragraph, page_type=page_type)
+	except Exception as e:
+		return str(e)
 
 @app.route('/stop')
 def stop():
