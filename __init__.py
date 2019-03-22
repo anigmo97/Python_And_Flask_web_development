@@ -58,7 +58,7 @@ def statistics_page():
 	page_type = 'about-contact'
 
 	try:
-		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections)
+		return render_template("general_statistics.html", paragraph=paragraph, page_type=page_type,collections=collections)
 	except Exception as e:
 		return str(e)
 
@@ -88,6 +88,13 @@ def quit():
 	func = request.environ.get('werkzeug.server.shutdown')
 	func()
 	return "Quitting..."
+
+@app.route('/flask_endpoint', methods=['POST'])
+def get_names():
+	if request.method == 'POST':
+		names = request.get_json()
+		print(names)		
+	return '', 200
 
 if __name__ == "__main__":
 	try:
