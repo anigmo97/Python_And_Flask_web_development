@@ -4,6 +4,7 @@ import subprocess
 import signal
 import sys
 
+collections=['test2', 'test', 'prueba', 'tweets'] #TODO CALL MONGO
 
 app = Flask(__name__)
 def signal_handler_control_c(sig, frame):
@@ -19,36 +20,45 @@ signal.signal(signal.SIGTSTP,signal_handler_control_z)
 @app.route('/')
 def homepage():
 
-	title = "Epic title"
+	# title = "Epic title"
 	paragraph = [ "pargraph1","paragraph222","paragraph333"]
 
 	try:
-		return render_template("index.html", title = title, paragraph=paragraph)
+		return render_template("index.html", paragraph=paragraph, collections=collections)
 	except Exception as e:
 		return str(e)
 
 
-@app.route('/about')
-def aboutpage():
+@app.route('/rankings')
+def rankings():
 
-	title = "About this site"
 	paragraph = [ "pargraph1","paragraph222","paragraph333"]
 	page_type = 'about'
 
 	try:
-		return render_template("index_boot.html", title = title, paragraph=paragraph, page_type=page_type)
+		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections)
 	except Exception as e:
 		return str(e)
 
-@app.route('/about/contact')
-def aboutcontactpage():
+@app.route('/politics_tweets')
+def politics_tweets():
 
-	title = "About this site"
 	paragraph = [ "pargraph1","paragraph222","paragraph333"]
 	page_type = 'about'
 
 	try:
-		return render_template("index_boot.html", title = title, paragraph=paragraph, page_type=page_type)
+		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections)
+	except Exception as e:
+		return str(e)
+
+@app.route('/statistics')
+def statistics_page():
+
+	paragraph = [ "pargraph1","paragraph222","paragraph333"]
+	page_type = 'about-contact'
+
+	try:
+		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections)
 	except Exception as e:
 		return str(e)
 
@@ -60,7 +70,7 @@ def graph(chartID = 'primer_chart', chart_type = 'line', chart_height = 500):
 	title = {"text": 'My Title'}
 	xAxis = {"categories": ['xAxis Data1', 'xAxis Data2', 'xAxis Data3']}
 	yAxis = {"title": {"text": 'yAxis Label'}}
-	return render_template('index_graph.html', webpage_title=webpage_title,chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
+	return render_template('index.html', collections=collections,webpage_title=webpage_title,chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
  
  
 

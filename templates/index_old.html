@@ -6,10 +6,10 @@
 	</head>
 	<body class="body">
 		<header>
-			<!-- <h3>{{ webpage_title }}</h3> -->
+			<h3>{{ title }}</h3>
 		</header>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="./">TFG_NAV</a>
+				<a class="navbar-brand" href="#">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
 				</button>
@@ -17,38 +17,27 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				  <ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
-					  <a class="nav-link" href="/statistics">General Statistics<span class="sr-only">(current)</span></a>
+					  <a class="nav-link" href="#">General Statistics<span class="sr-only">(current)</span></a>
 					</li>
 					<li class="nav-item">
-					  <a class="nav-link" href="/rankings">Rankings</a>
+					  <a class="nav-link" href="#">Rankings</a>
 					</li>
 					<li class="nav-item">
-							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
-					</li>
-
-
-					<li class="nav-item">
-							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
-					</li>
-
-
-
+							<a class="nav-link" href="#">Politics tweets analysis</a>
+						  </li>
 					<li class="nav-item dropdown">
 					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Collection
 					  </a>
-					  <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="collection_dropdown_menu">
-							{% for c in collections %}
-							<a class="dropdown-item" href=".">{{ c }}</a>
-							{% endfor %}
-
-						<!-- <a class="dropdown-item" href="#">Another action</a> -->
-						<!-- <div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Something else here</a> -->
+					  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								{% for c in collections %}
+								<a class="dropdown-item" href="#">{{ c }}</a>
+								{% endfor %}
+	
+							<!-- <a class="dropdown-item" href="#">Another action</a> -->
+							<!-- <div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Something else here</a> -->
 					  </div>
-					</li>
-					<li class="nav-item">
-					  <a class="nav-link" href="/graph_example">Graph</a>
 					</li>
 					<!-- <li class="nav-item">
 					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -72,31 +61,10 @@
 		<p>not about page</p>
 		{% endif %}
 
+		<footer>
 
-
-
-		<script src="https://code.highcharts.com/highcharts.js"></script>
-		<script src="https://code.highcharts.com/modules/series-label.js"></script>
-		<script src="https://code.highcharts.com/modules/exporting.js"></script>
-		<script src="https://code.highcharts.com/modules/export-data.js"></script>
-		<div id="{{ chartID|safe }}" class="chart" style="height: 500px"></div>
-		<script>
-			var chart_id = "{{ chartID|safe }}"
-			// var series = {{ series|safe }}
-			// var title = {{ title|safe }}
-			// var xAxis = {{ xAxis|safe }}
-			// var yAxis = {{ yAxis|safe }}
-			// var chart = {{ chart|safe }}
-		</script>
-
-	<script src="{{ url_for('static', filename='js/graph.js') }}"></script>
-
-
-
-
+		</footer>
 	</body>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
-
-	</html>
+</html>
