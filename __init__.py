@@ -1,10 +1,16 @@
 from flask import Flask
 from flask import request,render_template,url_for
-import subprocess
+import subprocess 
 import signal
 import sys
+import json
+import mongo_conector_for_flask as mongo_conector
+from django.utils.safestring import mark_safe
 
-collections=['test2', 'test', 'prueba', 'tweets'] #TODO CALL MONGO
+collections = mongo_conector.get_collection_names()
+if len(collections)>0:
+	mongo_conector.current_collection = collections[0]
+
 
 app = Flask(__name__)
 def signal_handler_control_c(sig, frame):
@@ -32,11 +38,14 @@ def homepage():
 @app.route('/rankings')
 def rankings():
 
-	paragraph = [ "pargraph1","paragraph222","paragraph333"]
-	page_type = 'about'
-
+	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
+	if statistics_dict == None:
+		statistics_dict = False
+	else:
+		user_screen_name_dict = mongo_conector.get_users_screen_name_dict_of_tweet_ids_for_tops_in_statistics_file(statistics_dict,mongo_conector.current_collection)
+		json_statistics_dict = mark_safe(json.dumps(statistics_dict))
 	try:
-		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections)
+		return render_template("test.html", statistics_dict=statistics_dict,json_statistics_dict=json_statistics_dict,user_screen_name_dict=user_screen_name_dict,collections=collections)
 	except Exception as e:
 		return str(e)
 
@@ -54,11 +63,16 @@ def politics_tweets():
 @app.route('/statistics')
 def statistics_page():
 
-	paragraph = [ "pargraph1","paragraph222","paragraph333"]
+	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
+	if statistics_dict == None:
+		statistics_dict = False
+	else:
+		json_statistics_dict = mark_safe(json.dumps(statistics_dict))
 	page_type = 'about-contact'
 
+
 	try:
-		return render_template("general_statistics.html", paragraph=paragraph, page_type=page_type,collections=collections)
+		return render_template("general_statistics.html", statistics_dict=statistics_dict,json_statistics_dict=json_statistics_dict, page_type=page_type,collections=collections)
 	except Exception as e:
 		return str(e)
 
@@ -93,7 +107,10 @@ def quit():
 def get_names():
 	if request.method == 'POST':
 		names = request.get_json()
-		print(names)		
+		if type(names) == str:
+			mongo_conector.current_collection = names
+		else:
+			raise Exception("Unexpected collection name")		
 	return '', 200
 
 if __name__ == "__main__":

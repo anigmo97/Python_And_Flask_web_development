@@ -16,11 +16,11 @@
 			  
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				  <ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-					  <a class="nav-link" href="/statistics">General Statistics<span class="sr-only">(current)</span></a>
-					</li>
 					<li class="nav-item">
-					  <a class="nav-link" href="/rankings">Rankings</a>
+					  <a class="nav-link" href="/statistics">General Statistics</a>
+					</li>
+					<li class="nav-item active">
+					  <a class="nav-link" href="/rankings">Rankings<span class="sr-only">(current)</span></a>
 					</li>
 					<li class="nav-item">
 							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
@@ -65,46 +65,46 @@
 				{% if statistics_dict == false %}
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
+				<script src="{{ url_for('static', filename='js/put_embed_tweet.js') }}"></script>
+				<p>Top 10 de mensajes con más likes: {{ statistics_dict["global_most_favs_tweets"] }}</p>
+				<div id="most_liked_messages" class="list-group">
+					{% for e in statistics_dict["global_most_favs_tweets"] %}
+					<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+					  <div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-1">user: {{ user_screen_name_dict[e[0]] }}</h5>
+						<small>3 days ago</small>
+					  </div>
+					  <p class="mb-1">tweet_id: {{ e[0] }}</p>
+					  <small>{{ e[1] }} likes</small>
+					  <script>
+							var tweet_id = '{{ e[0] }}';
+							var embed_dict = {{ statistics_dict.tweets_embed_html_dict|tojson }};
+							//alert(JSON.stringify(embed_dict, null, 2));
+							var registry = embed_dict[tweet_id];
+							//alert(JSON.stringify(registry, null, 2));
+							put_embed_tweet(registry,true);
+					</script>
+					</a>
+					{% endfor %}
+				  </div>
+				<p>Top 10 de mensajes con más likes: {{ statistics_dict["global_most_favs_tweets"] }}</p>
+				<p>Top 10 de mensajes con más retweets: {{ statistics_dict["global_most_rt_tweets"] }}</p>
+				<p>Top 10 de usuarios que más likes han dado: {{ statistics_dict["global_most_favs_users"] }}</p>
+				<p>Top 10 de usuarios con más mensajes publicados: {{ statistics_dict["global_most_tweets_users"] }}</p>
+				<p>Top 10 de usuarios con más followers: {{ statistics_dict["global_most_followers_users"] }}</p>
+				<!-- <p>Número de mensajes recopilados por usuario: {{ statistics_dict["local_user_messages_counter"] }}</p> -->
+				<!-- <p>Número de tweets recopilados por usuario: {{ statistics_dict["local_user_tweets_counter"] }}</p> -->
+				<p>Top 10 usuarios de los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_messages_users"] }}</p>
+				<p>Top 10 usuarios de los cuales hemos recopilado más tweets: {{ statistics_dict["local_most_tweets_users"] }}</p>
+				<p>Top 10 usuarios de los cuales hemos recopilado más retweets: {{ statistics_dict["local_most_retweets_users"] }}</p>
+				<p>Top 10 usuarios para los cuales hemos recopilado más respuestas: {{ statistics_dict["local_most_replied_users"] }}</p>
+				<p>Top 10 mensajes para los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_replied_tweets"] }}</p>
+				<p>Top 10 usuarios para los cuales hemos recopilado más citas: {{ statistics_dict["local_most_quoted_users"] }}</p>
+				<p>Top 10 mensajes para los cuales hemos recopilado más citas: {{ statistics_dict["local_most_quoted_tweets"] }}</p>
 
-				<p>Mensajes recopilados: {{ statistics_dict["messages_count"] }}</p>
-				<p>Tweets recopilados: {{ statistics_dict["tweets_count"] }}</p>
-				<p>Retweets recopilados: {{ statistics_dict["retweets_count"] }}</p>
-				<br/><br/>
-
-
-				<p>Numero de retweets con respuesta (no existen):  {{ statistics_dict["retweets_with_replies_count"] }}</p>
-				<p>Numero de retweets sin respuesta:  {{ statistics_dict["retweets_without_replies_count"] }}</p>
-				<p>Numero de retweets con cita:  {{ statistics_dict["retweets_with_quotes_count"] }}</p>
-				<p>Numero de retweets sin cita:  {{ statistics_dict["retweets_without_quotes_count"] }}</p>
-				<p>Numero de retweets con respuesta y cita (no hay reteets con respuesta): {{ statistics_dict["retweets_with_replies_and_quotes_count"] }}</p>
-				<br/><br/>
-
-				<p>Numero de tweets con respuesta :  {{ statistics_dict["tweets_with_replies_count"] }}</p>
-				<p>Numero de tweets sin respuesta:  {{ statistics_dict["tweets_without_replies_count"] }}</p>
-				<p>Numero de tweets con cita:  {{ statistics_dict["tweets_with_quotes_count"] }}</p>
-				<p>Numero de tweets sin cita:  {{ statistics_dict["tweets_without_quotes_count"] }}</p>
-				<p>Numero de tweets con respuesta y cita : {{ statistics_dict["tweets_with_replies_and_quotes_count"] }}</p>
-				<br/><br/>
-
-				<p>[DELETE OR ADD DICT] Numero de cuentas de las que se han extraído mensajes :  {{ statistics_dict["verified_account_dict_tweets"] }}</p>
-
-				<p>[DELETE OR ADD DICT] Numero de cuentas verificadas distintas de las que se han extraido tweets : {{ statistics_dict["verified_account_dict_tweets"] }}</p>
-
-				<p>[DELETE OR ADD DICT] Numero de mensajes de cuentas verificadas : {{ statistics_dict["verified_account_messages"] }}</p>
-				<p>[DELETE OR ADD DICT] Numero de tweets de cuentas verificadas : {{ statistics_dict["verified_account_tweets"] }}</p>
-				<p>[DELETE OR ADD DICT] Numero de retweets de cuentas verificadas : {{ statistics_dict["verified_account_retweets"] }}</p>
-				<br/><br/>
-
-				<p>[DELETE OR ADD DICT] Numero de cuentas no verificadas distintas de las que se han extraido tweets : {{ statistics_dict["not_verified_account_dict_tweets"] }}</p>
-				<p>[DELETE OR ADD DICT] Numero de mensajes de cuentas no verificadas : {{ statistics_dict["not_verified_account_messages"] }}</p>
-				<p>[DELETE OR ADD DICT] Numero de tweets de cuentas no verificadas : {{ statistics_dict["not_verified_account_tweets"] }}</p>
-				<p>[DELETE OR ADD DICT] Numero de retweets de cuentas no verificadas : {{ statistics_dict["not_verified_account_retweets"] }}</p>
-				<br/><br/>
-
-				<p>Numero de distintas vias de envio : {{ statistics_dict["way_of_send_counter"] }}</p>
-
-
-
+					
+				
+				
 				<p>{{ statistics_dict }}</p>
 				{% endif %}
 
@@ -132,5 +132,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
+
 
 	</html>
