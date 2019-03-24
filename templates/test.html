@@ -2,7 +2,77 @@
 	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
 	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
 	<head>
+			<style>
+					/* .list-group-item.list-group-item-action.flex-column.align-items-start >div {
+						background-color: yellow;
+						display:inline-block;
+					
+					}
+					.list-group-item.list-group-item-action.flex-column.align-items-start > div {
+						display:none;
+						visibility: hidden;
+					} */
 
+					/* #most_liked_messages > a:hover + div {
+						display:inline-block; 
+					}
+					#most_liked_messages > a + div {
+						display:none;
+						visibility: hidden;
+					}
+					#most_liked_messages > .list-group-item.list-group-item-action.flex-column.align-items-start:hover {
+						background-color:red;    
+    				transition-delay:1s;
+					}
+					#most_liked_messages > .list-group-item.list-group-item-action.flex-column.align-items-start {
+						transition: 0s background-color;
+					} */
+
+					/* .list-group-item.list-group-item-action.flex-column.align-items-start:hover + div{	   
+						transition: 0.5s;
+						background-color:red; 
+						display:inline-block;
+						transition-delay:1s;
+					}
+					 .list-group-item.list-group-item-action.flex-column.align-items-start + div{
+						transition: 0.5s;
+						display:none;
+						transition: 1s display;
+						transition: 1s background-color;
+					} */
+
+
+					.list-group-item.list-group-item-action.flex-column.align-items-start:hover + div{	   
+					  opacity: 1;
+  					height: auto;
+						padding: 8px; 
+						clear:both; 
+					}
+					 .list-group-item.list-group-item-action.flex-column.align-items-start + div{
+						opacity:0;
+						clear: both;
+						height: 0;
+						padding: 0 8px;
+						overflow: hidden;
+
+						-webkit-transition: all .3s ease .15s;
+						-moz-transition: all .3s ease .15s;
+						-o-transition: all .3s ease .15s;
+						-ms-transition: all .3s ease .15s;
+						transition: all .5s ease .15s;
+
+						border: 1px solid #ddd;
+
+						-webkit-box-shadow: 0px 2px 2px #ddd;
+						-moz-box-shadow: 0px 2px 2px #ddd;
+						box-shadow: 0px 2px 2px #ddd;
+						background: #FFF;
+					}
+
+
+
+
+					</style>
 	</head>
 	<body class="body">
 		<header>
@@ -87,7 +157,7 @@
 									document.write('<p class="mb-1">quoted_user: ' + current_registry["quoted_user_screen_name"] +'</p><p class="mb-1">quoted_tweet_id: '+ current_registry["quoted_tweet_id"] +'</p>');
 								}
 						</script>
-					  <small>{{ e[1] }} likes</small>
+						<small>{{ e[1] }} likes</small>
 					  <script>
 							var tweet_id = '{{ e[0] }}';
 							var embed_dict = {{ statistics_dict.tweets_embed_html_dict|tojson }};

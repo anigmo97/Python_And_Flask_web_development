@@ -1,0 +1,8 @@
+						{% if statistics_dict["tweets_owner_dict"][e[0]]["is_retweet"] %}
+						<p class="mb-1">retweeted_user: {{ statistics_dict["tweets_owner_dict"][e[0]]["retweeted_user_screen_name"] }}</p>
+						<p class="mb-1">retweeted_tweet_id: {{ statistics_dict["tweets_owner_dict"][e[0]]["retweeted_tweet_id"] }}</p>
+						{% endif %}
+						{% if statistics_dict["tweets_owner_dict"][e[0]]["is_quote"] %}
+						<p class="mb-1">quoted_user: {{ statistics_dict["tweets_owner_dict"][e[0]]["quoted_user_screen_name"] }}</p>
+						<p class="mb-1">quoted_tweet_id: {{ statistics_dict["tweets_owner_dict"][e[0]]["quoted_tweet_id"] }}</p>
+						{% endif %}
