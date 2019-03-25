@@ -38,6 +38,8 @@ def homepage():
 @app.route('/rankings')
 def rankings():
 
+	json_statistics_dict = None
+	user_screen_name_dict = None
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 	if statistics_dict == None:
 		statistics_dict = False
@@ -62,7 +64,7 @@ def politics_tweets():
 
 @app.route('/statistics')
 def statistics_page():
-
+	json_statistics_dict = None
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 	if statistics_dict == None:
 		statistics_dict = False
