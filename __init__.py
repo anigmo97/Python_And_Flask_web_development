@@ -26,11 +26,14 @@ signal.signal(signal.SIGTSTP,signal_handler_control_z)
 @app.route('/')
 def homepage():
 
-	# title = "Epic title"
-	paragraph = [ "pargraph1","paragraph222","paragraph333"]
+	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
+	if statistics_dict == None:
+		last_update = "Sin fichero de estadísticas"
+	else:
+		last_update = statistics_dict["ultima_modificación"]
 
 	try:
-		return render_template("index.html", paragraph=paragraph, collections=collections)
+		return render_template("home.html", collections=collections,collection=mongo_conector.current_collection,last_update=last_update)
 	except Exception as e:
 		return str(e)
 
@@ -38,16 +41,24 @@ def homepage():
 @app.route('/rankings')
 def rankings():
 
-	json_statistics_dict = None
 	user_screen_name_dict = None
+	users_dict = None
+	query_file = None
+	query_user_file = None
+	streamming_file = None
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 	if statistics_dict == None:
 		statistics_dict = False
 	else:
 		user_screen_name_dict = mongo_conector.get_users_screen_name_dict_of_tweet_ids_for_tops_in_statistics_file(statistics_dict,mongo_conector.current_collection)
-		json_statistics_dict = mark_safe(json.dumps(statistics_dict))
+		query_file = mongo_conector.get_query_file(mongo_conector.current_collection)
+		query_user_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
+		streamming_file = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
+		users_dict = statistics_dict["users_dict"]
 	try:
-		return render_template("test.html", statistics_dict=statistics_dict,json_statistics_dict=json_statistics_dict,user_screen_name_dict=user_screen_name_dict,collections=collections)
+		return render_template("test.html", statistics_dict=statistics_dict,users_dict=users_dict,user_screen_name_dict=user_screen_name_dict,
+		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
+		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
 		return str(e)
 
@@ -58,23 +69,29 @@ def politics_tweets():
 	page_type = 'about'
 
 	try:
-		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections)
+		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
 		return str(e)
 
 @app.route('/statistics')
 def statistics_page():
-	json_statistics_dict = None
+	query_file = None
+	query_user_file = None
+	streamming_file = None
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 	if statistics_dict == None:
 		statistics_dict = False
 	else:
-		json_statistics_dict = mark_safe(json.dumps(statistics_dict))
+		query_file = mongo_conector.get_query_file(mongo_conector.current_collection)
+		query_user_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
+		streamming_file = mongo_conector.get_streamming_file(mongo_conector.current_collection)
 	page_type = 'about-contact'
 
 
 	try:
-		return render_template("general_statistics.html", statistics_dict=statistics_dict,json_statistics_dict=json_statistics_dict, page_type=page_type,collections=collections)
+		return render_template("general_statistics.html", statistics_dict=statistics_dict, page_type=page_type,
+		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
+		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
 		return str(e)
 

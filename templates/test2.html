@@ -42,21 +42,21 @@
 					} */
 
 
-					.top_element_click:hover + script + .hidden_tweet{	   
+					.list-group-item.list-group-item-action.flex-column.align-items-start:hover + div{	   
 					  opacity: 1;
 						height: auto;
   					max-height:1000px; 
 						padding: 8px; 
 					}
 
-					.top_element_click + script + .hidden_tweet:hover{	   
+					.list-group-item.list-group-item-action.flex-column.align-items-start + div:hover{	   
 					  opacity: 1;
 						height: auto;
 						max-height:1000px; 
 						padding: 8px; 
 					}
 
-					 .top_element_click+ script + .hidden_tweet{
+					 .list-group-item.list-group-item-action.flex-column.align-items-start + div{
 						opacity:0;
 						clear: both;
 						max-height:0;
@@ -79,13 +79,7 @@
 					}
 
 				
-				.faq {
-					counter-reset: my-badass-counter;
-				}
-				.faq dt:before {
-					content: counter(my-badass-counter);
-					counter-increment: my-badass-counter;
-				}
+
 
 
 					</style>
@@ -152,174 +146,90 @@
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
 				<script src="{{ url_for('static', filename='js/put_embed_tweet.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/put_last_update.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/add_retweet_and_quote_info.js') }}"></script>
 				<h3>Top 10 de mensajes con más likes</h3>
 				<div id="most_liked_messages" class="list-group">
-					<dl class="faq">
 					{% for e in statistics_dict["global_most_favs_tweets"] %}
-						{% if e[0] != 0 %}
-						
-						<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-								
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row-reverse">
-
-									<script>put_last_update('{{ e[0] }}',{{ statistics_dict["tweets_owner_dict"]|tojson }})</script>
-									<dt></dt>
-	
-							</div>
-
-							<div class="d-flex w-100 justify-content-between">
-								<h5 class="mb-1">user: {{ user_screen_name_dict[e[0]] }}</h5>
-								<p class="mb-1">tweet_id: {{ e[0] }}</p>
-							</div>
-							
-							<script>add_retweet_and_quote_info('{{ e[0] }}',{{ statistics_dict["tweets_owner_dict"]|tojson }})</script>
-
-							<small>{{ e[1] }} likes</small>
-
-							
-						</a>
-						<script>put_embed_tweet('{{ e[0] }}',{{ statistics_dict.tweets_embed_html_dict|tojson }},false);</script>
-					
-						{% endif %}
+					{% if e[0] != 0 %}
+					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
+					  <div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-1">user: {{ user_screen_name_dict[e[0]] }}</h5>
+						<script>
+								var tweet_id = '{{ e[0] }}';
+								var tweet_owner_dict = {{ statistics_dict["tweets_owner_dict"]|tojson }};
+								var current_registry = tweet_owner_dict[tweet_id];
+								var last_update = current_registry["last_update"]
+								var content = '<small>Last update: '+ last_update + ' </small>'
+								document.write(content)
+						</script>	
+					  </div>
+						<p class="mb-1">tweet_id: {{ e[0] }}</p>
+						<script>
+							  var tweet_id = '{{ e[0] }}';
+								var tweet_owner_dict = {{ statistics_dict["tweets_owner_dict"]|tojson }};
+								var current_registry = tweet_owner_dict[tweet_id];
+								//alert(JSON.stringify(current_registry, null, 2));
+								if(current_registry["is_retweet"]){
+									document.write('<p class="mb-1">retweeted_user: ' + current_registry["retweeted_user_screen_name"] +'</p><p class="mb-1">retweeted_tweet_id: '+ current_registry["retweeted_tweet_id"] +'</p>');
+								}
+								if(current_registry["is_quote"]){
+									document.write('<p class="mb-1">quoted_user: ' + current_registry["quoted_user_screen_name"] +'</p><p class="mb-1">quoted_tweet_id: '+ current_registry["quoted_tweet_id"] +'</p>');
+								}
+						</script>
+						<small>{{ e[1] }} likes</small>
+					  <script>
+							var tweet_id = '{{ e[0] }}';
+							var embed_dict = {{ statistics_dict.tweets_embed_html_dict|tojson }};
+							//alert(JSON.stringify(embed_dict, null, 2));
+							var registry = embed_dict[tweet_id];
+							//alert(JSON.stringify(registry, null, 2));
+							put_embed_tweet(registry,false);
+					</script>
+					</a>
+					{% endif %}
 					{% endfor %}
-				</dl>
 					</div>
 <!--SEGUNDO TOP ------------------------------------------------------------------------------------------ -->
-				<br/><br/>
-				<h3>Top 10 de mensajes con más retweets:</h3>
-				<div id="most_retwetted_messages" class="list-group">
-					<dl class="faq">
+				<p>Top 10 de mensajes con más retweets: {{ statistics_dict["global_most_rt_tweets"] }}</p>
 				{% for e in statistics_dict["global_most_rt_tweets"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-						
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row-reverse">
-								<script>put_last_update('{{ e[0] }}',{{ statistics_dict["tweets_owner_dict"]|tojson }})</script>
-								<dt></dt>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ user_screen_name_dict[e[0]] }}</h5>
-							<p class="mb-1">tweet_id: {{ e[0] }}</p>
-						</div>
-
-						<script>add_retweet_and_quote_info('{{ e[0] }}',{{ statistics_dict["tweets_owner_dict"]|tojson }})</script>
-						<small>{{ e[1] }} retweets</small>
-
-					</a>
-					<script>put_embed_tweet('{{ e[0] }}',{{ statistics_dict.tweets_embed_html_dict|tojson }},false);</script>
-					{% endif %}
+				<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start">
+					<div class="d-flex w-100 justify-content-between">
+					<h5 class="mb-1">user: {{ user_screen_name_dict[e[0]] }}</h5>
+					<small>3 days ago</small>
+					</div>
+					<p class="mb-1">tweet_id: {{ e[0] }}</p>
+					<script>
+							var tweet_id = '{{ e[0] }}';
+							var tweet_owner_dict = {{ statistics_dict["tweets_owner_dict"]|tojson }};
+							var current_registry = tweet_owner_dict[tweet_id];
+							//alert(JSON.stringify(current_registry, null, 2));
+							if(current_registry["is_retweet"]){
+								document.write('<p class="mb-1">retweeted_user: ' + current_registry["retweeted_user_screen_name"] +'</p><p class="mb-1">retweeted_tweet_id: '+ current_registry["retweeted_tweet_id"] +'</p>');
+							}
+							if(current_registry["is_quote"]){
+								document.write('<p class="mb-1">quoted_user: ' + current_registry["quoted_user_screen_name"] +'</p><p class="mb-1">quoted_tweet_id: '+ current_registry["quoted_tweet_id"] +'</p>');
+							}
+					</script>
+					<small>{{ e[1] }} retweets</small>
+					<script>
+						var tweet_id = '{{ e[0] }}';
+						var embed_dict = {{ statistics_dict.tweets_embed_html_dict|tojson }};
+						//alert(JSON.stringify(embed_dict, null, 2));
+						var registry = embed_dict[tweet_id];
+						//alert(JSON.stringify(registry, null, 2));
+						put_embed_tweet(registry,false);
+				</script>
+				</a>
 				{% endfor %}
-				</dl>
 				</div>
 
-<!--TERCER TOP ------------------------------------------------------------------------------------------ -->
-					<br/><br/>
-					<p>Top 10 de usuarios que más likes han dado: {{ statistics_dict["global_most_favs_users"] }}</p>
-				<div id="most_fav_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["global_most_favs_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
 
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src="https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}" class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
 
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} likes</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-<!--CUARTO TOP ------------------------------------------------------------------------------------------ -->					
-				<br/><br/>
+				<p>Top 10 de usuarios que más likes han dado: {{ statistics_dict["global_most_favs_users"] }}</p>
 				<p>Top 10 de usuarios con más mensajes publicados: {{ statistics_dict["global_most_tweets_users"] }}</p>
-				<div id="most_tweets_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["global_most_tweets_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src="https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}" class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} mensajes publicados</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-
-<!--QUINTO TOP ------------------------------------------------------------------------------------------ -->	
-				<br/><br/>
 				<p>Top 10 de usuarios con más followers: {{ statistics_dict["global_most_followers_users"] }}</p>
-				<div id="most_tweets_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["global_most_followers_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src='https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}' class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} followers</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-
-<!--SEXTO TOP ------------------------------------------------------------------------------------------ -->	
-<br/><br/>
-			<p>Top 10 usuarios de los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_messages_users"] }}</p>
-				<div id="most_tweets_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["local_most_messages_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src='https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}' class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} mensajes de este usuario han sido recopilados</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-
-
-
+				<!-- <p>Número de mensajes recopilados por usuario: {{ statistics_dict["local_user_messages_counter"] }}</p> -->
+				<!-- <p>Número de tweets recopilados por usuario: {{ statistics_dict["local_user_tweets_counter"] }}</p> -->
+				<p>Top 10 usuarios de los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_messages_users"] }}</p>
 				<p>Top 10 usuarios de los cuales hemos recopilado más tweets: {{ statistics_dict["local_most_tweets_users"] }}</p>
 				<p>Top 10 usuarios de los cuales hemos recopilado más retweets: {{ statistics_dict["local_most_retweets_users"] }}</p>
 				<p>Top 10 usuarios para los cuales hemos recopilado más respuestas: {{ statistics_dict["local_most_replied_users"] }}</p>
@@ -331,7 +241,6 @@
 				
 				
 				<p>{{ statistics_dict }}</p>
-			</dl>
 				{% endif %}
 
 

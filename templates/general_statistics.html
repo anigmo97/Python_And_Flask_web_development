@@ -2,6 +2,116 @@
 	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
 	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
 	<head>
+			<style>
+			@import 'https://code.highcharts.com/css/highcharts.css';
+
+			.graph {
+				height: auto;
+				width: auto;
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			#search_type_distribution{
+				height: 80%;
+			}
+
+			.highcharts-pie-series .highcharts-point {
+				stroke: #EDE;
+				stroke-width: 2px;
+			}
+			.highcharts-pie-series .highcharts-data-label-connector {
+				stroke: silver;
+				stroke-dasharray: 2, 2;
+				stroke-width: 2px;
+			}
+			.primera_fila{
+				display: flex
+			}
+
+
+
+
+
+
+
+
+
+			.list {
+				font-family:sans-serif;
+			}
+			td {
+				padding:10px; 
+				border:solid 1px #eee;
+			}
+
+			list_input {
+				border:solid 1px #ccc;
+				border-radius: 5px;
+				padding:7px 14px;
+				margin-bottom:10px
+			}
+			input:focus {
+				outline:none;
+				border-color:#aaa;
+			}
+			.sort {
+				padding:8px 30px;
+				border-radius: 6px;
+				border:none;
+				display:inline-block;
+				color:#fff;
+				text-decoration: none;
+				background-color: #28a8e0;
+				height:30px;
+			}
+			.sort:hover {
+				text-decoration: none;
+				background-color:#1b8aba;
+			}
+			.sort:focus {
+				outline:none;
+			}
+			.sort:after {
+				display:inline-block;
+				width: 0;
+				height: 0;
+				border-left: 5px solid transparent;
+				border-right: 5px solid transparent;
+				border-bottom: 5px solid transparent;
+				content:"";
+				position: relative;
+				top:-10px;
+				right:-5px;
+			}
+			.sort.asc:after {
+				width: 0;
+				height: 0;
+				border-left: 5px solid transparent;
+				border-right: 5px solid transparent;
+				border-top: 5px solid #fff;
+				content:"";
+				position: relative;
+				top:4px;
+				right:-5px;
+			}
+			.sort.desc:after {
+				width: 0;
+				height: 0;
+				border-left: 5px solid transparent;
+				border-right: 5px solid transparent;
+				border-bottom: 5px solid #fff;
+				content:"";
+				position: relative;
+				top:-4px;
+				right:-5px;
+			}
+
+
+
+
+
+
+			</style>
 
 	</head>
 	<body class="body">
@@ -65,13 +175,139 @@
 				{% if statistics_dict == false %}
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
-
+				<script src="{{ url_for('static', filename='js/put_pie_char.js') }}"></script>
+				<script src="{{ url_for('static', filename='js/put_semi_circle_graph.js') }}"></script>
+				<script src="{{ url_for('static', filename='js/put_bar_char.js') }}"></script>
+				<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
+				<script src="https://code.highcharts.com/highcharts.js"></script>
+				<script src="https://code.highcharts.com/modules/exporting.js"></script>
 				<p>Mensajes recopilados: {{ statistics_dict["messages_count"] }}</p>
+				
+				<div id="primera_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+				<div class="mb-1 graph" id="pie_char_messages_count"></div>
+				<div class="mb-1 graph" id="search_type_distribution"></div>
+			</div>
+
+				<script>put_pie_char("pie_char_messages_count","Distribución mensajes recuperados",[["tweets", {{ statistics_dict["tweets_count"] }}],[ "retweets",{{ statistics_dict["retweets_count"] }}]])</script>
+
+
+				
+				<script>
+
+					var mensajes_recopilados = {{ statistics_dict["messages_count"] }};
+					var query_file = {{ query_file|tojson }} ;
+					var query_user_file = {{ query_user_file|tojson }} ; 
+					var streamming_file = {{ streamming_file|tojson }} ;
+
+					if(query_file != null){
+						var tweets_por_query = query_file["total_captured_tweets"]
+					} else {
+						var tweets_por_query = 0 
+					}
+
+					if(query_user_file != null){
+						var tweets_por_user = query_user_file["total_captured_tweets"] ;
+					} 
+					else {
+						var tweets_por_user = 0 
+					}
+
+					if(streamming_file != null){
+						var tweets_por_streamming = streamming_file["total_captured_tweets"] ;
+					} else{
+						var tweets_por_streamming = 0
+					}
+					alert("a")
+					var series_data = [
+						[ "búsqueda <br>por query", tweets_por_query],
+						[ "búsqueda <br>por usuario",tweets_por_user],
+						[ "búsqueda <br>por streamming",tweets_por_streamming],
+						{
+					name: 'Otros',
+					y: mensajes_recopilados - (tweets_por_query+tweets_por_user+tweets_por_streamming),
+					dataLabels: {
+					enabled: false
+					}
+					}
+					];
+					alert(series_data);
+					put_semi_circle_graph("search_type_distribution","Distribución <br> tipos de <br> búsqueda",series_data);
+				</script>
+
+				<div id="segunda_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+				<div class="mb-1 graph" id="tweets_bar_char"></div>
+				<div class="mb-1 graph" id="retweets_bar_char"></div>
+			</div>
+			<script>
+				var categories = ["tweets", "tweets con respuesta","tweets sin respuesta","tweets con cita","tweets sin cita","tweets con respuesta y cita"];
+				put_bar_char("tweets_bar_char","Detalle tweets",categories,
+				[{
+					data: [{{ statistics_dict["tweets_count"] }},{{ statistics_dict["tweets_with_replies_count"] }},{{ statistics_dict["tweets_without_replies_count"] }},
+					{{ statistics_dict["tweets_with_quotes_count"] }},{{ statistics_dict["tweets_without_quotes_count"] }},{{ statistics_dict["tweets_with_replies_and_quotes_count"] }}]
+				}]
+				);
+				var categories = ["retweets", "retweets con respuesta","retweets sin respuesta","retweets con cita","retweets sin cita","retweets con respuesta y cita"];
+				put_bar_char("retweets_bar_char","Detalle retweets",categories,
+				[{
+					data: [{{ statistics_dict["retweets_count"] }},{{ statistics_dict["retweets_with_replies_count"] }},{{ statistics_dict["retweets_without_replies_count"] }},
+					{{ statistics_dict["retweets_with_quotes_count"] }},{{ statistics_dict["retweets_without_quotes_count"] }},{{ statistics_dict["retweets_with_replies_and_quotes_count"] }}]
+				}]
+				);
+				
+			</script>
+
+			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+			<br><br><br>
+			
+			<h5>BÚSQUEDAS POR QUERY DE LA COLECCIÓN</h5>
+			<div id="test">
+				<ul class="list" id="lista_querys">
+				</ul>
+			</div>
+
+			<script>make_table_with_special_doc("test",['query','captured_tweets',"last_execution"],{{ query_file|tojson }})</script>
+
+
+			<br><br><br>
+			<h5>BÚSQUEDAS POR USUARIO DE LA COLECCIÓN</h5>
+			<div id="test2">
+				<ul class="list" id="lista_users">
+				</ul>
+			</div>
+			<script>make_table_with_special_doc("test2",['user','captured_tweets',"last_execution"],{{ query_user_file|tojson }})</script>
+
+
+			
+			<br><br><br>
+			<h5>BÚSQUEDAS POR STREAMMING DE LA COLECCIÓN</h5>
+			<div id="test3">
+				<ul class="list" id="lista_streamming">
+				</ul>
+			</div>
+			<script>make_table_with_special_doc("test3",['words','captured_tweets',"last_execution"],{{ streamming_file|tojson }})</script>
+
+
+
+
+
+			<br><br><br>
+			<br><br><br>
+			<br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
 				<p>Tweets recopilados: {{ statistics_dict["tweets_count"] }}</p>
 				<p>Retweets recopilados: {{ statistics_dict["retweets_count"] }}</p>
-				<br/><br/>
-
-
 				<p>Numero de retweets con respuesta (no existen):  {{ statistics_dict["retweets_with_replies_count"] }}</p>
 				<p>Numero de retweets sin respuesta:  {{ statistics_dict["retweets_without_replies_count"] }}</p>
 				<p>Numero de retweets con cita:  {{ statistics_dict["retweets_with_quotes_count"] }}</p>
@@ -132,5 +368,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
+
 
 	</html>
