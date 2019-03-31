@@ -1,0 +1,136 @@
+<html>
+	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
+	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
+	<head>
+			<style>
+				.PP_members{
+					background-color: #2ECCFA;
+					border-radius: 25px;
+				}
+				.PSOE_members{
+					background-color: #FF0000;
+					border-radius: 25px;
+				}
+				.PODEMOS_members{
+					background-color: #672F6C;
+					border-radius: 25px;
+				}
+				.CIUDADANOS_members{
+					background-color: orange;
+					border-radius: 25px;
+				}
+				.COMPROMIS_members{
+					background-color: #E65F00;
+					border-radius: 25px;
+				}
+				.VOX_members{
+					background-color: green;
+					border-radius: 25px;
+				}
+				.member{
+					background-color: #E6E6E6;
+					border-radius: 25px;
+				}
+				.member:hover {
+  				box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); 
+				}
+			</style>
+	</head>
+	<body class="body">
+		<header>
+			<!-- <h3>{{ webpage_title }}</h3> -->
+		</header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<a class="navbar-brand" href="./">TFG_NAV</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				  <span class="navbar-toggler-icon"></span>
+				</button>
+			  
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				  <ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+					  <a class="nav-link" href="/statistics">General Statistics<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" href="/rankings">Rankings</a>
+					</li>
+					<li class="nav-item">
+							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
+					</li>
+
+
+					<li class="nav-item">
+							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
+					</li>
+
+
+
+					<li class="nav-item dropdown">
+					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Collection
+					  </a>
+					  <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="collection_dropdown_menu">
+							{% for c in collections %}
+							<a class="dropdown-item" href=".">{{ c }}</a>
+							{% endfor %}
+
+						<!-- <a class="dropdown-item" href="#">Another action</a> -->
+						<!-- <div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">Something else here</a> -->
+					  </div>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" href="/graph_example">Graph</a>
+					</li>
+					<!-- <li class="nav-item">
+					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+					</li> -->
+				  </ul>
+				  <form class="form-inline my-2 my-lg-0">
+					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				  </form>
+				</div>
+			  </nav>
+
+		
+
+
+
+
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/series-label.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src="https://code.highcharts.com/modules/export-data.js"></script>
+		<script src="{{ url_for('static', filename='js/get_users_of_a_political_party.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/put_politics_section.js') }}"></script>
+			
+		<div id="miembros_PP" class="d-flex w-100 mb-3 px-3 justify-content-between flex-column PP_members"></div>
+		<div id="miembros_PSOE" class="d-flex w-100 mb-3 px-3 justify-content-between flex-column PSOE_members"></div>
+		<div id="miembros_CIUDADANOS" class="d-flex w-100 mb-3 px-3  justify-content-between flex-column CIUDADANOS_members"></div>
+		<div id="miembros_PODEMOS" class="d-flex w-100 mb-3 px-3 justify-content-between flex-column PODEMOS_members"></div>
+		<div id="miembros_COMPROMIS" class="d-flex w-100 mb-3 px-3 justify-content-between  flex-column COMPROMIS_members"></div>
+		<div id="miembros_VOX" class="d-flex w-100 mb-3 px-3 justify-content-between  flex-column VOX_members"></div>
+
+		<script>
+			var politicos_pp = get_users_of_a_political_party({{ searched_users_file|tojson }},"PP")
+			var politicos_psoe = get_users_of_a_political_party({{ searched_users_file|tojson }},"PSOE")
+			var politicos_podemos = get_users_of_a_political_party({{ searched_users_file|tojson }},"PODEMOS")
+			var politicos_ciudadanos = get_users_of_a_political_party({{ searched_users_file|tojson }},"CIUDADANOS")
+			var politicos_vox = get_users_of_a_political_party({{ searched_users_file|tojson }},"VOX")
+			var politicos_compromis = get_users_of_a_political_party({{ searched_users_file|tojson }},"COMPROMIS")
+			put_politics_section(politicos_pp,"PP","miembros_PP");
+			put_politics_section(politicos_psoe,"PSOE","miembros_PSOE");
+			put_politics_section(politicos_ciudadanos,"CIUDADANOS","miembros_CIUDADANOS");
+			put_politics_section(politicos_podemos,"PODEMOS","miembros_PODEMOS");
+			put_politics_section(politicos_compromis,"COMPROMIS","miembros_COMPROMIS");
+			put_politics_section(politicos_vox,"VOX","miembros_VOX");
+		</script>
+
+
+	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
+
+	</html>

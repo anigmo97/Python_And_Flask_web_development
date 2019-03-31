@@ -65,11 +65,21 @@ def rankings():
 @app.route('/politics_tweets')
 def politics_tweets():
 
-	paragraph = [ "pargraph1","paragraph222","paragraph333"]
-	page_type = 'about'
+
+	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
+
+	query_file = mongo_conector.get_query_file(mongo_conector.current_collection)
+	query_user_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
+	streamming_file = mongo_conector.get_streamming_file(mongo_conector.current_collection)
+	searched_users_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
+	page_type = 'about-contact'
+
 
 	try:
-		return render_template("index.html", paragraph=paragraph, page_type=page_type,collections=collections,collection=mongo_conector.current_collection)
+		return render_template("politics_tweets.html", statistics_dict=statistics_dict, page_type=page_type,
+		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
+		searched_users_file=searched_users_file,
+		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
 		return str(e)
 
