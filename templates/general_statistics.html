@@ -107,7 +107,35 @@
 			}
 
 
+			.pagination a {
+			color: black;
+			float: left;
+			padding: 8px 16px;
+			text-decoration: none;
+			border: 1px solid #ddd;
+			}
 
+			.pagination a.active {
+			background-color: #4CAF50;
+			color: white;
+			border: 1px solid #4CAF50;
+			}
+
+			.pagination a:hover:not(.active) {background-color: #ddd;}
+
+			.pagination a:first-child {
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+			}
+
+			.pagination a:last-child {
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+			}
+
+			li.active{
+				background-color: #99ddff;
+			}
 
 
 
@@ -181,6 +209,7 @@
 				<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
 				<script src="https://code.highcharts.com/highcharts.js"></script>
 				<script src="https://code.highcharts.com/modules/exporting.js"></script>
+				<script src="//cdnjs.cloudflare.com/ajax/libs/list.pagination.js/0.1.1/list.pagination.min.js"></script>
 				<p>Mensajes recopilados: {{ statistics_dict["messages_count"] }}</p>
 				
 				<div id="primera_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
@@ -229,7 +258,7 @@
 					}
 					}
 					];
-					put_semi_circle_graph("search_type_distribution","Distribución <br> tipos de <br> búsqueda",series_data);
+					put_semi_circle_graph("search_type_distribution","Distribución <br> tipos de <br> búsqueda",series_data,"Mensajes");
 				</script>
 
 				<div id="segunda_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
@@ -255,13 +284,17 @@
 			</script>
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+			
 			<br><br><br>
 			
 			<h5>BÚSQUEDAS POR QUERY DE LA COLECCIÓN</h5>
 			<div id="test">
 				<ul class="list" id="lista_querys">
 				</ul>
+				<ul class="pagination"></ul>
 			</div>
+			
+			
 
 			<script>make_table_with_special_doc("test",['query','captured_tweets',"last_execution"],{{ query_file|tojson }})</script>
 
@@ -269,21 +302,20 @@
 			<br><br><br>
 			<h5>BÚSQUEDAS POR USUARIO DE LA COLECCIÓN</h5>
 			<div id="test2">
-				<ul class="list" id="lista_users">
-				</ul>
+				<ul class="list" id="lista_users"></ul>
+				<ul class="pagination"></ul>
 			</div>
 			<script>make_table_with_special_doc("test2",['user','captured_tweets',"last_execution"],{{ query_user_file|tojson }})</script>
 
-
+			<link type="text/css" rel="stylesheet" href="/static/simplePagination/simplePagination.css"/>
 			
 			<br><br><br>
 			<h5>BÚSQUEDAS POR STREAMMING DE LA COLECCIÓN</h5>
 			<div id="test3">
-				<ul class="list" id="lista_streamming">
-				</ul>
+				<ul class="list" id="lista_streamming"></ul>
+				<ul class="pagination"></ul>
 			</div>
 			<script>make_table_with_special_doc("test3",['words','captured_tweets',"last_execution"],{{ streamming_file|tojson }})</script>
-
 
 
 

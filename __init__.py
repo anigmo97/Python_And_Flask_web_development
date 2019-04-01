@@ -56,7 +56,7 @@ def rankings():
 		streamming_file = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 		users_dict = statistics_dict["users_dict"]
 	try:
-		return render_template("test.html", statistics_dict=statistics_dict,users_dict=users_dict,user_screen_name_dict=user_screen_name_dict,
+		return render_template("rankings.html", statistics_dict=statistics_dict,users_dict=users_dict,user_screen_name_dict=user_screen_name_dict,
 		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
 		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
@@ -69,7 +69,7 @@ def politics_tweets():
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 
 	query_file = mongo_conector.get_query_file(mongo_conector.current_collection)
-	query_user_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
+	users_file = mongo_conector.get_users_file(mongo_conector.current_collection)
 	streamming_file = mongo_conector.get_streamming_file(mongo_conector.current_collection)
 	searched_users_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
 	page_type = 'about-contact'
@@ -77,7 +77,7 @@ def politics_tweets():
 
 	try:
 		return render_template("politics_tweets.html", statistics_dict=statistics_dict, page_type=page_type,
-		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
+		query_file = query_file, users_file=users_file, streamming_file=streamming_file,
 		searched_users_file=searched_users_file,
 		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:

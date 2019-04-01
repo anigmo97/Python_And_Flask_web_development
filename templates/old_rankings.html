@@ -1,0 +1,143 @@
+<html>
+	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
+	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
+	<head>
+
+	</head>
+	<body class="body">
+		<header>
+			<!-- <h3>{{ webpage_title }}</h3> -->
+		</header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<a class="navbar-brand" href="./">TFG_NAV</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				  <span class="navbar-toggler-icon"></span>
+				</button>
+			  
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				  <ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					  <a class="nav-link" href="/statistics">General Statistics</a>
+					</li>
+					<li class="nav-item active">
+					  <a class="nav-link" href="/rankings">Rankings<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
+					</li>
+
+
+					<li class="nav-item">
+							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
+					</li>
+
+
+
+					<li class="nav-item dropdown">
+					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Collection
+					  </a>
+					  <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="collection_dropdown_menu">
+							{% for c in collections %}
+							<a class="dropdown-item" href=".">{{ c }}</a>
+							{% endfor %}
+
+						<!-- <a class="dropdown-item" href="#">Another action</a> -->
+						<!-- <div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">Something else here</a> -->
+					  </div>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" href="/graph_example">Graph</a>
+					</li>
+					<!-- <li class="nav-item">
+					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+					</li> -->
+				  </ul>
+				  <form class="form-inline my-2 my-lg-0">
+					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				  </form>
+				</div>
+			  </nav>
+
+				<br/><br/>
+				{% if statistics_dict == false %}
+				<p>There is no statistics file for this collection {{ current_collection }}</p>
+				{% else %}
+				<script src="{{ url_for('static', filename='js/put_embed_tweet.js') }}"></script>
+				<script type="text/javascript">alert(arg);
+						document.write(statistics_dict['tweets_embed_html_dict'][e[0]]);</script>
+				<p>Top 10 de mensajes con más likes: {{ statistics_dict["global_most_favs_tweets"] }}</p>
+				<div class="list-group">
+					{% for e in statistics_dict["global_most_favs_tweets"] %}
+					<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+					  <div class="d-flex w-100 justify-content-between">
+						<h5 class="mb-1">user: {{ user_screen_name_dict[e[0]] }}</h5>
+						<small>3 days ago</small>
+					  </div>
+					  <p class="mb-1">tweet_id: {{ e[0] }}</p>
+					  <small>{{ e[1] }} likes</small>
+					  <!-- <script language="javascript" type="text/javascript">
+						var href_url = "https://twitter.com/" + user_screen_name_dict[e[0]] + "/status/" + e[0]
+						// var div = document.getElementById('output');
+    					// div.innerHTML = "<form><button formaction='"+href_url+"'>Show Folder</button></form>"
+					</script> -->
+					<script>alert(arg);
+					document.write(statistics_dict['tweets_embed_html_dict'][e[0]]);</script>
+					<!-- <blockquote class="twitter-tweet" data-lang="en"><p lang="es" dir="ltr">Hoy he estado en <a href="https://twitter.com/hashtag/Burgos?src=hash&amp;ref_src=twsrc%5Etfw">#Burgos</a> y he vuelto a disfrutar de su gente, de su gastronomía y de su maravillosa catedral, una joya y un orgullo para todos los españoles. ¡Muchas gracias por vuestro cariño, burgaleses! ¡Hasta pronto! 😉🙋🏻‍♂️ <a href="https://t.co/70YTW2gc5g">pic.twitter.com/70YTW2gc5g</a></p>&mdash; Albert Rivera (@Albert_Rivera) <a href="https://twitter.com/Albert_Rivera/status/1109143621457117185?ref_src=twsrc%5Etfw">March 22, 2019</a></blockquote>
+					<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> -->
+					  <!-- <small href={{ href_url }} >See on twitter</small> -->
+					  <!-- <form><button formaction= "{{ href_url }}" >Show Folder</button></form> -->
+					  <!-- <input type="button" value="Go" onclick="location.href='https://twitter.com/{{ user_screen_name_dict[e[0]] }}/status/{{ e[0] }}';" /> -->
+					</a>
+					{% endfor %}
+				  </div>
+				<p>Top 10 de mensajes con más likes: {{ statistics_dict["global_most_favs_tweets"] }}</p>
+				<p>Top 10 de mensajes con más retweets: {{ statistics_dict["global_most_rt_tweets"] }}</p>
+				<p>Top 10 de usuarios que más likes han dado: {{ statistics_dict["global_most_favs_users"] }}</p>
+				<p>Top 10 de usuarios con más mensajes publicados: {{ statistics_dict["global_most_tweets_users"] }}</p>
+				<p>Top 10 de usuarios con más followers: {{ statistics_dict["global_most_followers_users"] }}</p>
+				<!-- <p>Número de mensajes recopilados por usuario: {{ statistics_dict["local_user_messages_counter"] }}</p> -->
+				<!-- <p>Número de tweets recopilados por usuario: {{ statistics_dict["local_user_tweets_counter"] }}</p> -->
+				<p>Top 10 usuarios de los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_messages_users"] }}</p>
+				<p>Top 10 usuarios de los cuales hemos recopilado más tweets: {{ statistics_dict["local_most_tweets_users"] }}</p>
+				<p>Top 10 usuarios de los cuales hemos recopilado más retweets: {{ statistics_dict["local_most_retweets_users"] }}</p>
+				<p>Top 10 usuarios para los cuales hemos recopilado más respuestas: {{ statistics_dict["local_most_replied_users"] }}</p>
+				<p>Top 10 mensajes para los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_replied_tweets"] }}</p>
+				<p>Top 10 usuarios para los cuales hemos recopilado más citas: {{ statistics_dict["local_most_quoted_users"] }}</p>
+				<p>Top 10 mensajes para los cuales hemos recopilado más citas: {{ statistics_dict["local_most_quoted_tweets"] }}</p>
+
+					
+				
+				
+				<p>{{ statistics_dict }}</p>
+				{% endif %}
+
+
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/series-label.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src="https://code.highcharts.com/modules/export-data.js"></script>
+		<div id="{{ chartID|safe }}" class="chart" style="height: 500px"></div>
+		<script>
+			var chart_id = "{{ chartID|safe }}"
+			// var series = {{ series|safe }}
+			// var title = {{ title|safe }}
+			// var xAxis = {{ xAxis|safe }}
+			// var yAxis = {{ yAxis|safe }}
+			// var chart = {{ chart|safe }}
+		</script>
+
+	<script src="{{ url_for('static', filename='js/graph.js') }}"></script>
+
+
+
+
+	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
+
+
+	</html>

@@ -13,6 +13,7 @@ function make_search_bar(fields){
 		html_base+="<h3 class='col'>"+field_name+"</h3>";
 	}
 	html_base+="</div>";
+	alert(html_base)
 	return html_base;	
 }
 
@@ -24,6 +25,7 @@ function make_table_with_special_doc(container_id,fields_to_get,special_doc) {
 	var html_of_search_bar = make_search_bar(fields_to_get)
 
 	var old_inner_html = document.getElementById(container_id).innerHTML;
+	alert(old_inner_html)
 	document.getElementById(container_id).innerHTML = html_of_search_bar + old_inner_html;
 
 
@@ -33,7 +35,12 @@ function make_table_with_special_doc(container_id,fields_to_get,special_doc) {
 		template_for_data+="<h3 class=' col "+field_name+"'></h3>";	
 	}
 	template_for_data+="</li>"
-	var options = { valueNames : fields_to_get ,  item: template_for_data};
+	var options = { 
+		valueNames : fields_to_get ,  
+		item: template_for_data,
+		page: 10,
+  		pagination: true
+	};
 	var values = []
 	for (var index in special_doc){
 		if(index!='_id' && index != 'total_captured_tweets'){

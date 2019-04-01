@@ -4,7 +4,7 @@
 	<head>
 			<style>
 				.PP_members{
-					background-color: #2ECCFA;
+					background-color: #2ECCFA;   
 					border-radius: 25px;
 				}
 				.PSOE_members{
@@ -34,6 +34,61 @@
 				.member:hover {
   				box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); 
 				}
+
+				.graph {
+				height: auto;
+				width: auto;
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			#search_type_distribution{
+				height: 80%;
+			}
+
+			.highcharts-pie-series .highcharts-point {
+				stroke: #EDE;
+				stroke-width: 2px;
+			}
+			.highcharts-pie-series .highcharts-data-label-connector {
+				stroke: silver;
+				stroke-dasharray: 2, 2;
+				stroke-width: 2px;
+			}
+			.primera_fila{
+				display: flex
+			}
+
+			.pagination a {
+			color: black;
+			float: left;
+			padding: 8px 16px;
+			text-decoration: none;
+			border: 1px solid #ddd;
+			}
+
+			.pagination a.active {
+			background-color: #4CAF50;
+			color: white;
+			border: 1px solid #4CAF50;
+			}
+
+			.pagination a:hover:not(.active) {background-color: #ddd;}
+
+			.pagination a:first-child {
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+			}
+
+			.pagination a:last-child {
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+			}
+
+			ul.pagination > li.active{
+				background-color: #99ddff;
+			}
+
+
 			</style>
 	</head>
 	<body class="body">
@@ -104,6 +159,12 @@
 		<script src="https://code.highcharts.com/modules/export-data.js"></script>
 		<script src="{{ url_for('static', filename='js/get_users_of_a_political_party.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/put_politics_section.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/put_semi_circle_graph.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/get_num_tweets_by_party.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/get_num_likes_by_party.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
+
+		
 			
 		<div id="miembros_PP" class="d-flex w-100 mb-3 px-3 justify-content-between flex-column PP_members"></div>
 		<div id="miembros_PSOE" class="d-flex w-100 mb-3 px-3 justify-content-between flex-column PSOE_members"></div>
@@ -112,20 +173,88 @@
 		<div id="miembros_COMPROMIS" class="d-flex w-100 mb-3 px-3 justify-content-between  flex-column COMPROMIS_members"></div>
 		<div id="miembros_VOX" class="d-flex w-100 mb-3 px-3 justify-content-between  flex-column VOX_members"></div>
 
+
 		<script>
-			var politicos_pp = get_users_of_a_political_party({{ searched_users_file|tojson }},"PP")
-			var politicos_psoe = get_users_of_a_political_party({{ searched_users_file|tojson }},"PSOE")
-			var politicos_podemos = get_users_of_a_political_party({{ searched_users_file|tojson }},"PODEMOS")
-			var politicos_ciudadanos = get_users_of_a_political_party({{ searched_users_file|tojson }},"CIUDADANOS")
-			var politicos_vox = get_users_of_a_political_party({{ searched_users_file|tojson }},"VOX")
-			var politicos_compromis = get_users_of_a_political_party({{ searched_users_file|tojson }},"COMPROMIS")
-			put_politics_section(politicos_pp,"PP","miembros_PP");
-			put_politics_section(politicos_psoe,"PSOE","miembros_PSOE");
-			put_politics_section(politicos_ciudadanos,"CIUDADANOS","miembros_CIUDADANOS");
-			put_politics_section(politicos_podemos,"PODEMOS","miembros_PODEMOS");
-			put_politics_section(politicos_compromis,"COMPROMIS","miembros_COMPROMIS");
-			put_politics_section(politicos_vox,"VOX","miembros_VOX");
+			var json_searched_users_file = {{ searched_users_file|tojson }};
+			var politicos_pp = get_users_of_a_political_party(json_searched_users_file,"PP");
+			var politicos_psoe = get_users_of_a_political_party(json_searched_users_file,"PSOE");
+			var politicos_podemos = get_users_of_a_political_party(json_searched_users_file,"PODEMOS");
+			var politicos_ciudadanos = get_users_of_a_political_party(json_searched_users_file,"CIUDADANOS");
+			var politicos_vox = get_users_of_a_political_party(json_searched_users_file,"VOX");
+			var politicos_compromis = get_users_of_a_political_party(json_searched_users_file,"COMPROMIS");
+			if (politicos_pp.length>0){
+				put_politics_section(politicos_pp,"PP","miembros_PP",json_searched_users_file);
+			}
+			if (politicos_psoe.length>0){
+				put_politics_section(politicos_psoe,"PSOE","miembros_PSOE",json_searched_users_file);
+			}
+			if (politicos_ciudadanos.length>0){
+				put_politics_section(politicos_ciudadanos,"CIUDADANOS","miembros_CIUDADANOS",json_searched_users_file);
+			}
+			if (politicos_podemos.length>0){
+				put_politics_section(politicos_podemos,"PODEMOS","miembros_PODEMOS",json_searched_users_file);
+			}
+			if(politicos_compromis.length>0){
+				put_politics_section(politicos_compromis,"COMPROMIS","miembros_COMPROMIS",json_searched_users_file);
+			}
+			if(politicos_vox.length>0){
+				put_politics_section(politicos_vox,"VOX","miembros_VOX",json_searched_users_file);
+			}
 		</script>
+
+
+
+		<div id="primera_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+					<div class="mb-1 graph" id="tweets_distribution"></div>
+					<div class="mb-1 graph" id="likes_distribution"></div>
+		</div>
+
+		<script>
+				var dict_tweets = get_num_tweets_by_party({{ searched_users_file|tojson }});
+				var series_data = [
+					[ "PP", dict_tweets.PP],
+					[ "PSOE",dict_tweets.PSOE],
+					[ "CIUDADANOS",dict_tweets.CIUDADANOS],
+					[ "PODEMOS",dict_tweets.PODEMOS],
+					[ "COMPROMIS",dict_tweets.COMPROMIS],
+					[ "VOX",dict_tweets.VOX]
+				];
+				var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
+				put_semi_circle_graph("tweets_distribution","Distribución <br> tweets <br> capturados",series_data,"Mensajes",colors);
+			</script>
+
+			<script>
+					var json_users_file = {{ users_file|tojson }};
+					if (json_users_file!= null){
+						var dict_likes = get_num_likes_by_party(json_users_file);
+						var series_data = [
+							[ "PP", dict_likes.PP],
+							[ "PSOE",dict_likes.PSOE],
+							[ "CIUDADANOS",dict_likes.CIUDADANOS],
+							[ "PODEMOS",dict_likes.PODEMOS],
+							[ "COMPROMIS",dict_likes.COMPROMIS],
+							[ "VOX",dict_likes.VOX]
+						];
+						var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
+						put_semi_circle_graph("likes_distribution","Distribución <br> likes <br> capturados",series_data,"Likes",colors);
+					}
+					</script>
+
+
+
+			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+			<br><br><br>
+			<h5>LIKES CAPTURADOS</h5>
+			<div id="likes_capturados">
+				<ul class="list" id="lista_users"></ul>
+				<ul class="pagination"></ul>
+			</div>
+			<script>make_table_with_special_doc('likes_capturados',
+			['user_screen_name','likes_to_PP','likes_to_PSOE','likes_to_PODEMOS','likes_to_CIUDADANOS','likes_to_COMPROMIS','likes_to_VOX','last_like_registered'],
+			{{ users_file|tojson }})
+			</script>
+
+<!-- ['user_screen_name','likes_to_PP','likes_to_PSOE','likes_to_PODEMOS','likes_to_CIUDADANOS','likes_to_COMPROMIS','likes_to_VOX','last_like_registered'], -->
 
 
 	</body>
