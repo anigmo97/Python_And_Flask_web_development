@@ -16,21 +16,19 @@ function put_table_header(fields,table_id){
 		table_header+="<th scope='col' class='sort col' data-sort='"+field_name+"'>"+field_name.replace(/_/g," ")+"</th>";
 	}
 	table_header+="</tr></thead>";
-	alert(table_header)
 	document.getElementById(table_id).innerHTML = table_header;
 }
-// function make_search_bar(fields,table_id){
-// 	var html_base = "<div class='d-flex w-100 mb-3 flex-row'>" + 
-// 		"<input class='search list_input col' placeholder='Search' />";
-
-// 	for( var field_index in fields){
-// 			field_name = fields[field_index];
-// 			html_base+="<button class='sort col' data-sort='"+field_name+"'>Sort by "+field_name+"</button>";
-// 		}
-// 	html_base+="</div>";
-// 	alert(html_base)
-// 	return html_base;	
-// }
+function make_search_bar(fields,table_id){
+	var html_base = "<table><thead><tr>" 
+	// for( var field_index in fields){
+	// 		field_name = fields[field_index];
+	// 		//<input data-search-type="lastName" class="search" placeholder="Search Last Name" />
+	// 		html_base+="<th><input data-search-type='"+field_name+"' class='search' placeholder='Search"+field_name+"' /></th>";
+	// 	}
+	html_base +="<input class='search list_input col' placeholder='Search' />"
+	html_base+="</tr></thead></table>";
+	return html_base;	
+}
 
 
 
@@ -39,11 +37,10 @@ function make_table_with_special_doc(container_id,table_header_container,table_i
 	// make search bar with buttons
 
 	put_table_header(fields_to_get,table_header_container);
-	// var html_of_search_bar = make_search_bar(fields_to_get,table_id)
+	var html_of_search_bar = make_search_bar(fields_to_get,table_id)
 
-	// var old_inner_html = document.getElementById(container_id).innerHTML;
-	// alert(old_inner_html)
-	// document.getElementById(container_id).innerHTML = html_of_search_bar + old_inner_html;
+	var old_inner_html = document.getElementById(container_id).innerHTML;
+	document.getElementById(container_id).innerHTML = html_of_search_bar + old_inner_html;
 
 
 	var template_for_data = "<tr>"
@@ -70,7 +67,7 @@ function make_table_with_special_doc(container_id,table_header_container,table_i
 		}
 	}
 
-	// alert(JSON.stringify(values, null, 3));
+	alert(JSON.stringify(values, null, 3));
 	// alert(JSON.stringify(options, null, 3));
 
 	new List(container_id,options,values);

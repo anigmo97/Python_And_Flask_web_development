@@ -238,7 +238,46 @@
 
 
 <!-- TERCERA FILA ------------------------------------------------------------------------------------------ -->
+
 			<div id="tercera_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+				<div class="mb-1 graph" id="send_way_distribution"></div>
+				<div class="mb-1 graph" id="account_distribution"></div>
+			</div>
+
+			<script>
+
+				var formas_de_envio_dict = {{ statistics_dict["way_of_send_counter"]|tojson }};
+				var data = [];
+
+				for( var key in formas_de_envio_dict){
+					data.push([key,formas_de_envio_dict[key]])
+				}
+
+				put_pie_char("send_way_distribution","Distribución mensajes recuperados",data)
+
+				</script>
+
+			<script>
+				var verified_account = 0;
+				var not_verified_account = 0;
+				var verified_account_dict = {{ statistics_dict["verified_account_dict_tweets"]|tojson }};
+				var not_verified_account_dict = {{ statistics_dict["not_verified_account_dict_tweets"]|tojson }};
+
+				for ( var i in verified_account_dict){ verified_account+=1;}
+				for ( var i in not_verified_account_dict){ not_verified_account+=1;}
+
+			var series_data = [
+						[ "Cuentas verificadas", verified_account],
+						[ "Cuentas no verificadas",not_verified_account]
+					];
+					put_semi_circle_graph("account_distribution","Distribución <br> cuentas",series_data,"");
+
+				</script>
+
+
+<!-- CUARTA FILA ------------------------------------------------------------------------------------------ -->
+
+			<div id="cuarta_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
 				<div class="mb-1 graph" id="not_verified_account_distribution"></div>
 				<div class="mb-1 graph" id="verified_account_distribution"></div>
 			</div>
@@ -264,10 +303,59 @@
 			// <script>put_pie_char("verified_account_distribution","Distribución mensajes cuentas verificadas",
 			// [["tweets", {{ statistics_dict["verified_account_tweets"] }}],[ "retweets",{{ statistics_dict["verified_account_retweets"] }}]])</script>
 
-
+			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
 <!-- CUARTA FILA ------------------------------------------------------------------------------------------ -->
-			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+
+			<div id="cuarta_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+				<div id="not_verified_account">
+					<table class="table table-striped table-dark aux_header" id="tabla_usuarios_no_verificados_header">
+					</table>
+					<table class="table table-striped list table-dark" id="tabla_usuarios_no_verificados">
+					</table>
+					<ul class="pagination"></ul>
+				</div>
+				<div id="verified_account">
+					<table class="table table-striped table-dark aux_header" id="tabla_usuarios_verificados_header">
+					</table>
+					<table class="table table-striped list table-dark" id="tabla_usuarios_verificados">
+					</table>
+					<ul class="pagination"></ul>
+				</div>
+			</div>
+
+			<script>
+				var registros_verificadas = {};
+				var registros_no_verificadas = {};
+				var users_dict = {{ statistics_dict["users_dict"]|tojson }};
+				var not_verified_account_dict_tweets = {{ statistics_dict["not_verified_account_dict_tweets"]|tojson }}
+				var verified_account_dict_tweets = {{ statistics_dict["verified_account_dict_tweets"]|tojson }}
+				var screen_names = null;
+				for( var key in not_verified_account_dict_tweets){
+					screen_names = users_dict[key]["screen-names"]
+					registros_no_verificadas[key] = {
+						"user_id" : screen_names[0],
+						"mensajes" : not_verified_account_dict_tweets[key] 
+					}
+				}
+				for( var key in verified_account_dict_tweets){
+					screen_names = users_dict[key]["screen-names"]
+					registros_verificadas[key] = {
+						"user_id" : screen_names[0],
+						"mensajes" : verified_account_dict_tweets[key] 
+					}
+				}
+				make_table_with_special_doc("not_verified_account","tabla_usuarios_no_verificados_header","tabla_usuarios_no_verificados",['user_id','mensajes'],registros_no_verificadas)
+				make_table_with_special_doc("verified_account","tabla_usuarios_verificados_header","tabla_usuarios_verificados",['user_id','mensajes'],registros_verificadas)
+
+			</script>
+			//<script>make_table_with_special_doc("busquedas_por_query","tabla_busquedas_por_query_header_container","tabla_busquedas_por_query",['query','captured_tweets',"last_execution"],{{ query_file|tojson }})</script>
+
+
+
+
+<!-- QUINTA FILA ------------------------------------------------------------------------------------------ -->
+			
 			
 			<br><br><br>
 			
