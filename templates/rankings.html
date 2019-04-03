@@ -1,7 +1,7 @@
 <html>
 	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
 	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
-	<head>
+	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">	<head>
 			<style>
 					/* .list-group-item.list-group-item-action.flex-column.align-items-start >div {
 						background-color: yellow;
@@ -151,9 +151,31 @@
 				{% if statistics_dict == false %}
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 				<script src="{{ url_for('static', filename='js/put_embed_tweet.js') }}"></script>
 				<script src="{{ url_for('static', filename='js/put_last_update.js') }}"></script>
 				<script src="{{ url_for('static', filename='js/add_retweet_and_quote_info.js') }}"></script>
+				<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+				<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
+				
+				
+				<div class="custom-control custom-switch d-flex justify-content-center" id="switch_media_div">
+					<input type="checkbox" class="custom-control-input" id="switch_media" checked>
+					<label class="custom-control-label" id="switch_media_label" for="switch_media">Mostrar media en tweets con media</label>
+				  </div>
+
+				<script async>
+						$.getJSON({
+							url: "/getmethod/with_media_state",
+							data: { },
+							success: function(data){
+								var with_media_state =data.with_media_state;
+								document.getElementById("switch_media").checked = with_media_state;
+							}
+							});
+				</script>
+
+				
 				<h3>Top 10 de mensajes con más likes</h3>
 				<div id="most_liked_messages" class="list-group">
 					<dl class="faq">
@@ -180,12 +202,14 @@
 
 							
 						</a>
-						<script>put_embed_tweet('{{ e[0] }}',{{ statistics_dict.tweets_embed_html_dict|tojson }},false);</script>
+						<script>put_embed_tweet('{{ e[0] }}',{{ statistics_dict.tweets_embed_html_dict|tojson }},{{ with_media|tojson }});</script>
 					
 						{% endif %}
 					{% endfor %}
 				</dl>
 					</div>
+
+					
 <!--SEGUNDO TOP ------------------------------------------------------------------------------------------ -->
 				<br/><br/>
 				<h3>Top 10 de mensajes con más retweets:</h3>
@@ -209,7 +233,7 @@
 						<small>{{ e[1] }} retweets</small>
 
 					</a>
-					<script>put_embed_tweet('{{ e[0] }}',{{ statistics_dict.tweets_embed_html_dict|tojson }},false);</script>
+					<script>put_embed_tweet('{{ e[0] }}',{{ statistics_dict.tweets_embed_html_dict|tojson }},{{ with_media|tojson }});</script>
 					{% endif %}
 				{% endfor %}
 				</dl>
@@ -355,10 +379,12 @@
 
 
 	</body>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/top_element_click.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/toogle_on_click.js') }}"></script>
+
 
 
 	</html>

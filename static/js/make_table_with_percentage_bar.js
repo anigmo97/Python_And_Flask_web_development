@@ -32,7 +32,7 @@ function make_search_bar(fields,table_id){
 
 
 
-function make_table_with_special_doc(container_id,table_header_container,table_id,fields_to_get,special_doc) {
+function make_table_with_special_doc(container_id,table_header_container,table_id,fields_to_get,divider_field,divisor_field,special_doc) {
 
 	// make search bar with buttons
 

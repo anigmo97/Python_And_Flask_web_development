@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request,render_template,url_for
+from flask import request,render_template,url_for,jsonify
 import subprocess 
 import signal
 import sys
@@ -8,6 +8,7 @@ import mongo_conector_for_flask as mongo_conector
 from django.utils.safestring import mark_safe
 
 collections = mongo_conector.get_collection_names()
+with_media_state = False
 if len(collections)>0:
 	mongo_conector.current_collection = collections[0]
 
@@ -40,12 +41,13 @@ def homepage():
 
 @app.route('/rankings')
 def rankings():
-
+	global with_media_state
 	user_screen_name_dict = None
 	users_dict = None
 	query_file = None
 	query_user_file = None
 	streamming_file = None
+	likes_list_file=None
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 	if statistics_dict == None:
 		statistics_dict = False
@@ -54,11 +56,12 @@ def rankings():
 		query_file = mongo_conector.get_query_file(mongo_conector.current_collection)
 		query_user_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
 		streamming_file = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
+		likes_list_file = mongo_conector.get_likes_list_file(mongo_conector.current_collection)
 		users_dict = statistics_dict["users_dict"]
 	try:
 		return render_template("rankings.html", statistics_dict=statistics_dict,users_dict=users_dict,user_screen_name_dict=user_screen_name_dict,
-		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
-		collections=collections,collection=mongo_conector.current_collection)
+		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,likes_list_file=likes_list_file,
+		collections=collections,collection=mongo_conector.current_collection,with_media=with_media_state)
 	except Exception as e:
 		return str(e)
 
@@ -72,13 +75,14 @@ def politics_tweets():
 	users_file = mongo_conector.get_users_file(mongo_conector.current_collection)
 	streamming_file = mongo_conector.get_streamming_file(mongo_conector.current_collection)
 	searched_users_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
+	likes_list_file = mongo_conector.get_likes_list_file(mongo_conector.current_collection)
 	page_type = 'about-contact'
 
 
 	try:
 		return render_template("politics_tweets.html", statistics_dict=statistics_dict, page_type=page_type,
 		query_file = query_file, users_file=users_file, streamming_file=streamming_file,
-		searched_users_file=searched_users_file,
+		searched_users_file=searched_users_file,likes_list_file=likes_list_file,
 		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
 		return str(e)
@@ -88,6 +92,7 @@ def statistics_page():
 	query_file = None
 	query_user_file = None
 	streamming_file = None
+	users_file = None
 	statistics_dict = mongo_conector.get_statistics_file_from_collection(mongo_conector.current_collection)
 	if statistics_dict == None:
 		statistics_dict = False
@@ -95,12 +100,13 @@ def statistics_page():
 		query_file = mongo_conector.get_query_file(mongo_conector.current_collection)
 		query_user_file = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
 		streamming_file = mongo_conector.get_streamming_file(mongo_conector.current_collection)
+		users_file = mongo_conector.get_users_file(mongo_conector.current_collection)
 	page_type = 'about-contact'
 
 
 	try:
 		return render_template("general_statistics.html", statistics_dict=statistics_dict, page_type=page_type,
-		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,
+		query_file = query_file, query_user_file=query_user_file, streamming_file=streamming_file,users_file=users_file,
 		collections=collections,collection=mongo_conector.current_collection)
 	except Exception as e:
 		return str(e)
@@ -141,6 +147,20 @@ def get_names():
 		else:
 			raise Exception("Unexpected collection name")		
 	return '', 200
+
+@app.route('/rankings_endpoint', methods=['POST'])
+def get_with_media_state():
+	if request.method == 'POST':
+		global with_media_state
+		state = request.get_json()
+		with_media_state = state
+		print("with media toogle_changed to {}".format(with_media_state))		
+	return '', 200
+
+@app.route('/getmethod/with_media_state',methods=['GET'])
+def get_javascript_data():
+	print("Send withm_media_state to html: {}".format(with_media_state))
+	return  jsonify({"with_media_state":with_media_state})
 
 if __name__ == "__main__":
 	try:
