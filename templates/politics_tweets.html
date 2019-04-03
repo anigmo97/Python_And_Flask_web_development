@@ -60,6 +60,18 @@
 				display: flex
 			}
 
+			.percentage_bar_div{
+				width: 100%;
+				height: 50% !important;
+				background-color: grey !important;
+				color: transparent; ;
+			}
+			.percentage_bar{
+				width: 100%;
+				height: 100% !important;
+			}
+
+
 
 			</style>
 	</head>
@@ -124,7 +136,7 @@
 
 
 
-
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="https://code.highcharts.com/modules/series-label.js"></script>
 		<script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -135,6 +147,7 @@
 		<script src="{{ url_for('static', filename='js/get_num_tweets_by_party.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/get_num_likes_by_party.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/make_table_with_percentage_bar.js') }}"></script>
 
 		
 			
@@ -244,17 +257,39 @@
 	// for( var key in json_likes_list_file){
 	// 	json_likes_list_file[key]["num_likes_capturados"]
 	// }
-	make_table_with_special_doc('likes_capturados_por_tweet','likes_capturados_por_tweet_header_container','tabla_likes_capturados_por_tweet',
+	make_table_with_percentage_bar('likes_capturados_por_tweet','likes_capturados_por_tweet_header_container','tabla_likes_capturados_por_tweet',
 	['tweet_id','user_screen_name','num_likes_capturados','num_likes','last_like_resgistered'],
+	"num_likes_capturados","num_likes",
 	{{ likes_list_file|tojson }})
 	</script>
 
 
+	<script>
+	$('li.percentage_bar').each(function(){
+		var text = $(this).text();
+		var text_perc = Math.trunc( text ).toString()+'%'
+		//alert(text_perc)
+		if(text >=0 && text< 40){
+			$(this).css('background-color','red');
+			// $(this).style.width = text_perc;
+		}else if (text >= 40 && text< 55){
+			$(this).css('background-color','orange');
+		}else if (text >= 55 && text< 70){
+			$(this).css('background-color','yellow');
+		}else{
+			$(this).css('background-color','green');
+		}
+		$(this).width(text_perc);
+		if(text <=1){
+			$(this).width("1%");
+		}
 
+	});
+	</script>
 
 
 	</body>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
 
