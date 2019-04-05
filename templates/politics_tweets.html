@@ -87,20 +87,16 @@
 			  
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				  <ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
+					<li class="nav-item">
 					  <a class="nav-link" href="/statistics">General Statistics<span class="sr-only">(current)</span></a>
 					</li>
 					<li class="nav-item">
 					  <a class="nav-link" href="/rankings">Rankings</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item active">
 							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
 					</li>
 
-
-					<li class="nav-item">
-							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
-					</li>
 
 
 
@@ -119,11 +115,8 @@
 					  </div>
 					</li>
 					<li class="nav-item">
-					  <a class="nav-link" href="/graph_example">Graph</a>
+					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">collection = {{ collection }}</a>
 					</li>
-					<!-- <li class="nav-item">
-					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-					</li> -->
 				  </ul>
 				  <form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -250,7 +243,7 @@
 	</table>
 	<table class="table table-striped list table-dark" id="tabla_likes_capturados_por_tweet">
 	</table>
-	<ul class="pagination"></ul>
+	<!--<ul class="pagination"></ul>-->
 </div>
 	<script>
 	// var json_likes_list_file = {{ likes_list_file|tojson }}

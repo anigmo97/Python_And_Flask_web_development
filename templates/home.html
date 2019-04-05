@@ -2,6 +2,24 @@
 	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
 	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
 	<head>
+		<style>
+		.sucess_file:hover {
+  				box-shadow: 0 0 15px rgba(0, 0, 0, 0.7) !important;
+					border-radius: 33px !important;
+					cursor: hand; 
+				}
+		.container{
+			display: flex;
+			max-height: 80px;
+			max-width: 100%;
+		}
+		.info_image{
+			width: 50;
+			height: 50;
+			margin-left: 33%;
+			margin-right: 33%;
+		}
+		</style>
 
 	</head>
 	<body class="body">
@@ -27,11 +45,6 @@
 					</li>
 
 
-					<li class="nav-item">
-							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
-					</li>
-
-
 
 					<li class="nav-item dropdown">
 					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -42,35 +55,92 @@
 							<a class="dropdown-item" href=".">{{ c }}</a>
 							{% endfor %}
 
-						<!-- <a class="dropdown-item" href="#">Another action</a> -->
-						<!-- <div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Something else here</a> -->
 					  </div>
 					</li>
 					<li class="nav-item">
-					  <a class="nav-link" href="/graph_example">Graph</a>
+					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">collection = {{ collection }}</a>
 					</li>
-					<!-- <li class="nav-item">
-					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-					</li> -->
 				  </ul>
 				  <form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
 					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 				  </form>
 				</div>
-			  </nav>
+				</nav>
 
-				<h5>Colección actual = {{ collection }}</h5>
-				<h5>Last update = {{ last_update }}</h5>
+				<br><br>
+				<div class="d-flex flex-row justify-content-center">
+					<div class="d-flex flex-column justify-content-center">
+						<img class='info_image p-2' src="{{ url_for('static', filename='img/update.svg') }}" alt='actualización'>
+						<a >Last analysis = {{ last_update }}</a>
+					</div>
+				</div>
+
+				
 
 
+				<br><br>
+				<h3>DOCUMENTOS ESPECIALES DE LA COLECCIÓN</h3>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">Documento</th>
+							<th scope="col">Id</th>
+							<th scope="col">Estado</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>Statistics File</td>
+							<td>"statistics_file_id"</td>
+							<td id="statistics"></td>
+						</tr>
+						<tr>
+								<td>Query File</td>
+								<td>"query_file"</td>
+								<td id="query"></td>
+							</tr>
+							<tr>
+									<td>Streamming File</td>
+									<td>"streamming_file_id"</td>
+									<td id="streamming"></td>
+								</tr>
+								<tr>
+										<td>Searched Users File</td>
+										<td>"searched_users_file_id"</td>
+										<td id="searched_users"></td>
+									</tr>
+									<tr>
+											<td>Likes List File</td>
+											<td>"likes_list_file_id"</td>
+											<td id="likes"></td>
+										</tr>
+										<tr>
+												<td>Users File</td>
+												<td>"users_file_id"</td>
+												<td id="users"></td>
+											</tr>
+					</tbody>
+				</table>
+				<script src="{{ url_for('static', filename='js/put_file_image.js') }}"></script>
+				<script>
+					var error_image_url = "{{ url_for('static', filename='img/file_error.png') }}";
+					var sucess_image_url = "{{ url_for('static', filename='img/file_correct.png') }}";
+
+					put_file_image("statistics",{{ statistics_dict|tojson }},"statistics_file",error_image_url,sucess_image_url);
+					put_file_image("query",{{ query_file|tojson }} ,"query_file",error_image_url,sucess_image_url);
+					put_file_image("searched_users",{{ searched_users_file|tojson }},"searched_users_file",error_image_url,sucess_image_url);
+					put_file_image("streamming",{{ streamming_file|tojson }},"streamming_file",error_image_url,sucess_image_url);
+					put_file_image("likes",{{ likes_list_file|tojson }},"likes_file",error_image_url,sucess_image_url);
+					put_file_image("users",{{ users_file|tojson }} ,"users_file",error_image_url,sucess_image_url);
+				</script>
 
 
 	</body>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/post_to_flask.js') }}"></script>
+	<!-- <script src="{{ url_for('static', filename='js/post_to_flask.js') }}"></script> -->
 
 	</html>

@@ -1,47 +1,9 @@
 <html>
 	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
 	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
-	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">	<head>
+	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">	
+	<head>
 			<style>
-					/* .list-group-item.list-group-item-action.flex-column.align-items-start >div {
-						background-color: yellow;
-						display:inline-block;
-					
-					}
-					.list-group-item.list-group-item-action.flex-column.align-items-start > div {
-						display:none;
-						visibility: hidden;
-					} */
-
-					/* #most_liked_messages > a:hover + div {
-						display:inline-block; 
-					}
-					#most_liked_messages > a + div {
-						display:none;
-						visibility: hidden;
-					}
-					#most_liked_messages > .list-group-item.list-group-item-action.flex-column.align-items-start:hover {
-						background-color:red;    
-    				transition-delay:1s;
-					}
-					#most_liked_messages > .list-group-item.list-group-item-action.flex-column.align-items-start {
-						transition: 0s background-color;
-					} */
-
-					/* .list-group-item.list-group-item-action.flex-column.align-items-start:hover + div{	   
-						transition: 0.5s;
-						background-color:red; 
-						display:inline-block;
-						transition-delay:1s;
-					}
-					 .list-group-item.list-group-item-action.flex-column.align-items-start + div{
-						transition: 0.5s;
-						display:none;
-						transition: 1s display;
-						transition: 1s background-color;
-					} */
-
-
 					.top_element_click:hover + script + .hidden_tweet{	   
 					  opacity: 1;
 						height: auto;
@@ -112,13 +74,6 @@
 							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
 					</li>
 
-
-					<li class="nav-item">
-							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
-					</li>
-
-
-
 					<li class="nav-item dropdown">
 					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Collection
@@ -134,11 +89,8 @@
 					  </div>
 					</li>
 					<li class="nav-item">
-					  <a class="nav-link" href="/graph_example">Graph</a>
-					</li>
-					<!-- <li class="nav-item">
-					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-					</li> -->
+						<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">collection = {{ collection }}</a>
+					  </li>
 				  </ul>
 				  <form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

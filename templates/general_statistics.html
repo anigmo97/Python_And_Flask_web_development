@@ -32,13 +32,6 @@
 			}
 
 
-
-
-
-
-
-
-
 			.list {
 				font-family:sans-serif;
 			}
@@ -56,36 +49,6 @@
 			input:focus {
 				outline:none;
 				border-color:#aaa;
-			}
-
-			.pagination a {
-			color: black;
-			float: left;
-			padding: 8px 16px;
-			text-decoration: none;
-			border: 1px solid #ddd;
-			}
-
-			.pagination a.active {
-			background-color: #4CAF50;
-			color: white;
-			border: 1px solid #4CAF50;
-			}
-
-			.pagination a:hover:not(.active) {background-color: #ddd;}
-
-			.pagination a:first-child {
-			border-top-left-radius: 5px;
-			border-bottom-left-radius: 5px;
-			}
-
-			.pagination a:last-child {
-			border-top-right-radius: 5px;
-			border-bottom-right-radius: 5px;
-			}
-
-			li.active{
-				background-color: #99ddff;
 			}
 
 
@@ -116,9 +79,6 @@
 					</li>
 
 
-					<li class="nav-item">
-							<a class="nav-link" href="/static/js/get_dropdown_selection.js">get_dropdown_selection</a>
-					</li>
 
 
 
@@ -137,11 +97,8 @@
 					  </div>
 					</li>
 					<li class="nav-item">
-					  <a class="nav-link" href="/graph_example">Graph</a>
-					</li>
-					<!-- <li class="nav-item">
-					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-					</li> -->
+						<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">collection = {{ collection }}</a>
+					  </li>
 				  </ul>
 				  <form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -178,7 +135,7 @@
 
 					var mensajes_recopilados = {{ statistics_dict["messages_count"] }};
 					var query_file = {{ query_file|tojson }} ;
-					var query_user_file = {{ query_user_file|tojson }} ; 
+					var query_user_file = {{ searched_users_file|tojson }} ; 
 					var streamming_file = {{ streamming_file|tojson }} ;
 
 					if(query_file != null){
@@ -380,7 +337,7 @@
 				</table>
 				<ul class="pagination"></ul>
 			</div>
-			<script>make_table_with_special_doc("busquedas_por_usuario","tabla_busquedas_por_usuario_header_container","tabla_busquedas_por_usuario",['user','captured_tweets',"last_execution"],{{ query_user_file|tojson }})</script>
+			<script>make_table_with_special_doc("busquedas_por_usuario","tabla_busquedas_por_usuario_header_container","tabla_busquedas_por_usuario",['user','captured_tweets',"last_execution"],{{ searched_users_file|tojson }})</script>
 
 <!-- SEPTIMA FILA ------------------------------------------------------------------------------------------ -->
 
@@ -474,17 +431,6 @@
 		<script src="https://code.highcharts.com/modules/series-label.js"></script>
 		<script src="https://code.highcharts.com/modules/exporting.js"></script>
 		<script src="https://code.highcharts.com/modules/export-data.js"></script>
-		<div id="{{ chartID|safe }}" class="chart" style="height: 500px"></div>
-		<script>
-			var chart_id = "{{ chartID|safe }}"
-			// var series = {{ series|safe }}
-			// var title = {{ title|safe }}
-			// var xAxis = {{ xAxis|safe }}
-			// var yAxis = {{ yAxis|safe }}
-			// var chart = {{ chart|safe }}
-		</script>
-
-	<script src="{{ url_for('static', filename='js/graph.js') }}"></script>
 
 
 

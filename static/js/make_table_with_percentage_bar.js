@@ -33,7 +33,6 @@ function get_item_template(fields_to_get){
 		template+="<td class='col "+field_name+"'></td>";		
 	}
 	template+="</tr>";
-	alert(template)
 	return template
 };
 
@@ -72,8 +71,8 @@ function make_table_with_percentage_bar(container_id,table_header_container,tabl
 		var options = { 
 		valueNames : fields_to_get_with_percentage ,  
 		item: template_for_data,
-		page: 10,
-  		pagination: true
+		// page: 10,
+  		// pagination: true
 	};
 	var values = []
 	var percentage_without_sign;
