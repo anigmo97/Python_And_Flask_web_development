@@ -66,6 +66,39 @@
 				border-radius: 5px;
 			}
 
+			.TOP_members{
+				background-color: #34373d;
+				border-radius: 25px;
+				color: transparent;
+			}
+			.member{
+				background-color: #E6E6E6;
+				border-radius: 25px;
+				color:black !important;
+			}
+			.member_1{
+				background-color: gold !important;
+				border-radius: 25px;
+				color:black !important;
+			}
+			.member_2{
+				background-color: silver !important;
+				border-radius: 25px;
+				color:black !important;
+			}
+			.member_3{
+				background-color: #cd7f32 !important;
+				border-radius: 25px;
+				color:black !important;
+			}			
+			.member:hover {
+  				box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); 
+			}
+			.medal{
+				height: 40px;
+				width: auto;
+			}
+
 
 					</style>
 	</head>
@@ -79,7 +112,7 @@
 				form.action = '/search/'+document.getElementById("search_input").value;
 			}
 		</script>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<a class="navbar-brand" href="./">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
@@ -120,9 +153,12 @@
 						<button id="search_button" class="btn btn-outline-success my-2 my-sm-0 busqueda" type="submit" value="Go" >Search</button>
 					  </form>
 					</div>
+					<br>
 					</nav>
+				
+					
 
-				<br/><br/>
+				<br/><br/><br/><br/>
 				{% if statistics_dict == false %}
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
@@ -132,6 +168,8 @@
 				<script src="{{ url_for('static', filename='js/add_retweet_and_quote_info.js') }}"></script>
 				<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 				<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
+				<script src="{{ url_for('static', filename='js/put_top_users_section.js') }}"></script>
+				<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 				
 				
 				<div class="custom-control custom-switch d-flex justify-content-center" id="switch_media_div">
@@ -217,79 +255,29 @@
 <!--TERCER TOP ------------------------------------------------------------------------------------------ -->
 					<br/><br/>
 					<p>Top 10 de usuarios que más likes han dado: {{ statistics_dict["global_most_favs_users"] }}</p>
-				<div id="most_fav_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["global_most_favs_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src="https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}" class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} likes</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-<!--CUARTO TOP ------------------------------------------------------------------------------------------ -->					
-				<br/><br/>
-				<p>Top 10 de usuarios con más mensajes publicados: {{ statistics_dict["global_most_tweets_users"] }}</p>
-				<div id="most_tweets_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["global_most_tweets_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src="https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}" class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} mensajes publicados</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-
+					<div id="most_fav_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
+<!--CUARTO TOP ------------------------------------------------------------------------------------------ -->	
+					<br/><br/>
+					<p>Top 10 de usuarios con más mensajes publicados: {{ statistics_dict["global_most_tweets_users"] }}</p>
+					<div id="most_messages_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
 <!--QUINTO TOP ------------------------------------------------------------------------------------------ -->	
-				<br/><br/>
-				<p>Top 10 de usuarios con más followers: {{ statistics_dict["global_most_followers_users"] }}</p>
-				<div id="most_tweets_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["global_most_followers_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
+					<br/><br/>
+					<p>Top 10 de usuarios con más followers:  {{ statistics_dict["global_most_followers_users"] }}</p>
+					<div id="most_followers_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
 
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src='https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}' class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
+					<script>
+						var global_most_favs_users = {{ statistics_dict["global_most_favs_users"]|tojson }};
+						var global_most_messages_users = {{ statistics_dict["global_most_tweets_users"]|tojson }}
+						var global_most_followers_users = {{ statistics_dict["global_most_followers_users"]|tojson }};
+						var users_dict = {{ users_dict|tojson }};
+						var image_1 = "{{ url_for('static', filename='img/1.svg') }}";
+						var image_2 = "{{ url_for('static', filename='img/2.svg') }}";
+						var image_3 = "{{ url_for('static', filename='img/3.svg') }}";
+						put_top_users_section(global_most_favs_users," Likes","most_fav_users",users_dict,image_1,image_2,image_3)
+						put_top_users_section(global_most_messages_users," Mensajes","most_messages_users",users_dict,image_1,image_2,image_3)
+						put_top_users_section(global_most_followers_users," Followers","most_followers_users",users_dict,image_1,image_2,image_3)
+					</script>
 
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} followers</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
 
 <!--SEXTO TOP ------------------------------------------------------------------------------------------ -->	
 <br/><br/>
@@ -347,7 +335,6 @@
 
 	</body>
 	
-	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/top_element_click.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/toogle_on_click.js') }}"></script>

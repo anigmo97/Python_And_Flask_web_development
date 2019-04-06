@@ -49,7 +49,7 @@
 				form.action = '/search/'+document.getElementById("search_input").value;
 			}
 		</script>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<a class="navbar-brand" href="./">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
@@ -91,7 +91,7 @@
 						</div>
 						</nav>
 
-				<br><br>
+				<br><br><br/><br/>
 				<div class="d-flex flex-row justify-content-center">
 					<div class="d-flex flex-column justify-content-center">
 						<img class='info_image p-2' src="{{ url_for('static', filename='img/update.svg') }}" alt='actualización'>
