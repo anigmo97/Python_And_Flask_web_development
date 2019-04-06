@@ -132,7 +132,24 @@ def show_statistics_file(path):
 	special_doc = special_doc_dict.get(path,None)
 	return jsonify(special_doc)
 
+@app.route('/search/',defaults={'path':''})
+@app.route('/search/<path:path>')
+def show_tweet_search_result(path): 
+	if(len(path) >0 and path[-1]=='?'):
+		path = path[0:-1]
+	dict_result = mongo_conector.get_tweet_dict_by_tweet_id_using_regex(path,mongo_conector.current_collection)
+	try:
+		return render_template("search.html", collections=collections,collection=mongo_conector.current_collection,dict_result=dict_result,len_result=len(dict_result))
+	except Exception as e:
+		return str(e)
 
+@app.route('/show_file/',defaults={'path':''})
+@app.route('/show_file/<path:path>')
+def show_file(path): 
+	if(len(path) >0 and path[-1]=='?'):
+		path = path[0:-1]
+	doc = mongo_conector.get_tweet_by_id(path,mongo_conector.current_collection)
+	return jsonify(doc)
 
 if __name__ == "__main__":
 	try:
