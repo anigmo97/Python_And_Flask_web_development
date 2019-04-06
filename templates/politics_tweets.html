@@ -71,6 +71,22 @@
 				height: 100% !important;
 			}
 
+			.dropdown-item:hover{
+				background-color: darkslategray;
+			}
+
+			.footer{
+				background-color: #34373d;
+				color:ghostwhite;
+			}
+			.footer_image:hover{
+				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+				border-radius: 33px;
+			}
+			.footer_image_linkedin:hover{
+				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+				border-radius: 5px;
+			}
 
 
 			</style>
@@ -79,7 +95,13 @@
 		<header>
 			<!-- <h3>{{ webpage_title }}</h3> -->
 		</header>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			function get_action(form) {
+				form.action = '/search/'+document.getElementById("search_input").value;
+			}
+		</script>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<a class="navbar-brand" href="./">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
@@ -100,13 +122,13 @@
 
 
 
-					<li class="nav-item dropdown">
-					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<li class="nav-item dropdown" >
+					  <a class="nav-link dropdown-toggle"  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Collection
 					  </a>
-					  <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="collection_dropdown_menu">
+					  <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown" id="collection_dropdown_menu">
 							{% for c in collections %}
-							<a class="dropdown-item" href=".">{{ c }}</a>
+							<a class="dropdown-item" style="color:ghostwhite;" href=".">{{ c }}</a>
 							{% endfor %}
 
 						<!-- <a class="dropdown-item" href="#">Another action</a> -->
@@ -118,12 +140,14 @@
 					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">collection = {{ collection }}</a>
 					</li>
 				  </ul>
-				  <form class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-				  </form>
-				</div>
-			  </nav>
+				  <form id="search_form" onsubmit="get_action(this);" class="form-inline my-2 my-lg-0" onSubmit="">
+						<input id="search_input" class="form-control mr-sm-2 busqueda" type="search" placeholder="Search" aria-label="Search">
+						<button id="search_button" class="btn btn-outline-success my-2 my-sm-0 busqueda" type="submit" value="Go" >Search</button>
+					  </form>
+					</div>
+					</nav>
+		
+					<br><br>
 
 		
 
@@ -141,6 +165,7 @@
 		<script src="{{ url_for('static', filename='js/get_num_likes_by_party.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/make_table_with_percentage_bar.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/put_bar_char.js') }}"></script>
 
 		
 			
@@ -218,6 +243,43 @@
 					}
 					</script>
 
+<!-- SECCION TWEET POR PARTIDO / LIKES/TWEET  ------------------------------------------------------------------------------------>
+
+<div id="barras1" class="d-flex w-100 mb-3 justify-content-between flex-row">
+		<div class="mb-1 graph" id="tweets_dividido_politico"></div>
+		<div class="mb-1 graph" id="likes_dividido_tweets"></div>
+</div>
+
+	<script>
+
+		var likes_por_partido = {{ likes_por_partido|tojson }};
+		var politicos_por_partido = {{ politicos_por_partido|tojson }};
+		var tweets_por_partido = get_num_tweets_by_party({{ searched_users_file|tojson }});
+		var colores_por_partido = { "PP" : '#2ECCFA', "PSOE":'#FF0000',"CIUDADANOS":'#FF8000',"PODEMOS":'#672F6C', "COMPROMIS":'#E65F00' ,"VOX":'#40FF00' }
+		var current_partido = null;
+
+		var colors = [];
+		var categories1 = [];
+		var categories2 = [];
+		var data1 = [];
+		var data2 = [];
+		var aux = null;
+		for(var key in politicos_por_partido){
+			if(politicos_por_partido[key]>0){
+				categories1.push("Tweets/politico de "+key)
+				categories2.push("Likes/tweet de "+key)
+				aux = tweets_por_partido[key] / politicos_por_partido[key]
+				data1.push({y:aux,color:colores_por_partido[key]})
+				aux = likes_por_partido[key] / tweets_por_partido[key]
+				data2.push({y:aux,color:colores_por_partido[key]})
+			}
+		}
+		put_bar_char("tweets_dividido_politico","Tweets / politico",categories1,[{data: data1}],colors);
+		put_bar_char("likes_dividido_tweets","Likes / tweets",categories2,[{data: data2}],colors);
+		
+	</script>
+
+
 <!-- SECCION TABLA LIKES POR USUARIO  ------------------------------------------------------------------------------------>
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
@@ -281,7 +343,22 @@
 	});
 	</script>
 
-
+<br><br>
+<!--fixed-bottom  -->
+<footer class="footer p-2">
+		<div class="column justify-content-center">
+				
+			<div align="center">
+					<a href='https://www.linkedin.com/in/anigmo/'>
+					<img class = "mb-1 footer_image_linkedin" src="{{ url_for('static', filename='img/linkedin.svg') }}" alt='See on github'>
+				</a>
+				<a class href='https://github.com/anigmo97'>
+					<img class = "mb-1 footer_image" src="{{ url_for('static', filename='img/github2.png') }}" alt='See on github'>
+				</a>
+				<small class="m-3">INFO © 2019 TFG made by Ángel Igualada Moraga (polytechnic university of valencia), All rights reserved</small>
+			</div>
+		</div>		
+</footer>
 	</body>
 
 	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

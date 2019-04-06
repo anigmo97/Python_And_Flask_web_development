@@ -1,4 +1,4 @@
-function put_bar_char(container_id,graph_title,x_axis_categories,series) {
+function put_bar_char(container_id,graph_title,x_axis_categories,series,colors_arg) {
 	//var str = JSON.stringify(embed_dict, null, 2);
 	//alert(series_data);
 	Highcharts.chart(container_id, {
