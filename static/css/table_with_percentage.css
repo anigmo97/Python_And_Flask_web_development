@@ -1,0 +1,10 @@
+.percentage_bar_div{
+	width: 100%;
+	height: 50% !important;
+	background-color: grey !important;
+	color: transparent; ;
+}
+.percentage_bar{
+	width: 100%;
+	height: 100% !important;
+}

@@ -1,7 +1,40 @@
 <html>
-	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
-	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
-	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='make_tables.css') }}" />
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" media="screen" href= "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified JS -->
+	<script type = "text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- Library used to do list tables with sorting, filtering and pagination-->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+	<!-- Library used to be able to access to nested atributes using string Eg: User.name -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"> </script>
+	<!-- Libraries to do graphics -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+
+
+	<!-- SCRIPTS CREADOS -->
+	<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_bar_char.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_semi_circle_graph.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/make_table_with_special_doc.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_footer.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/politics/get_users_of_a_political_party.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/politics/put_politics_section.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/politics/get_num_tweets_by_party.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/politics/get_num_likes_by_party.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/politics/make_table_with_percentage_bar.js') }}"></script>
+	<!-- CSS CREADOS -->
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/dropdown.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/table_with_percentage.css') }}" />
+
+
 	<head>
 		
 			<style>
@@ -37,7 +70,7 @@
   				box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); 
 				}
 
-				.graph {
+			.graph {
 				height: auto;
 				width: auto;
 				max-width: 800px;
@@ -60,33 +93,6 @@
 				display: flex
 			}
 
-			.percentage_bar_div{
-				width: 100%;
-				height: 50% !important;
-				background-color: grey !important;
-				color: transparent; ;
-			}
-			.percentage_bar{
-				width: 100%;
-				height: 100% !important;
-			}
-
-			.dropdown-item:hover{
-				background-color: darkslategray;
-			}
-
-			.footer{
-				background-color: #34373d;
-				color:ghostwhite;
-			}
-			.footer_image:hover{
-				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-				border-radius: 33px;
-			}
-			.footer_image_linkedin:hover{
-				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-				border-radius: 5px;
-			}
 
 
 			</style>
@@ -95,12 +101,14 @@
 		<header>
 			<!-- <h3>{{ webpage_title }}</h3> -->
 		</header>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		
 		<script type="text/javascript">
 			function get_action(form) {
 				form.action = '/search/'+document.getElementById("search_input").value;
 			}
 		</script>
+
+<!-- INICIO NAV BAR-->	
 		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<a class="navbar-brand" href="./">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,26 +154,13 @@
 					  </form>
 					</div>
 					</nav>
-		
-					<br><br> <br/><br/>
+<!-- FIN NAV BAR-->					
+					
+
+		<br><br> <br/><br/>
 
 		
-
-
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://code.highcharts.com/highcharts.js"></script>
-		<script src="https://code.highcharts.com/modules/series-label.js"></script>
-		<script src="https://code.highcharts.com/modules/exporting.js"></script>
-		<script src="https://code.highcharts.com/modules/export-data.js"></script>
-		<script src="{{ url_for('static', filename='js/get_users_of_a_political_party.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/put_politics_section.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/put_semi_circle_graph.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/get_num_tweets_by_party.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/get_num_likes_by_party.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/make_table_with_percentage_bar.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/put_bar_char.js') }}"></script>
+		<h3>Usuarios miembros de partidos:</h3>
 
 		
 			
@@ -281,9 +276,7 @@
 
 
 <!-- SECCION TABLA LIKES POR USUARIO  ------------------------------------------------------------------------------------>
-
-			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-			<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"> </script>
+			<br><br>
 			<br><br><br>
 			<h5>LIKES CAPTURADOS POR USUARIO</h5>
 			<div id="likes_capturados">
@@ -299,7 +292,7 @@
 			</script>
 
 <!-- SECCION LIKES CAPTURADOS POR TWEET  ------------------------------------------------------------------------------------>
-
+<br><br>
 <h5>LIKES CAPTURADOS POR TWEET</h5>
 <div id="likes_capturados_por_tweet">
 	<table class="table table-striped table-dark aux_header" id="likes_capturados_por_tweet_header_container">
@@ -344,24 +337,7 @@
 	</script>
 
 <br><br>
-<!--fixed-bottom  -->
-<footer class="footer p-2">
-		<div class="column justify-content-center">
-				
-			<div align="center">
-					<a href='https://www.linkedin.com/in/anigmo/'>
-					<img class = "mb-1 footer_image_linkedin" src="{{ url_for('static', filename='img/linkedin.svg') }}" alt='See on github'>
-				</a>
-				<a class href='https://github.com/anigmo97'>
-					<img class = "mb-1 footer_image" src="{{ url_for('static', filename='img/github2.png') }}" alt='See on github'>
-				</a>
-				<small class="m-3">INFO © 2019 TFG made by Ángel Igualada Moraga (polytechnic university of valencia), All rights reserved</small>
-			</div>
-		</div>		
-</footer>
-	</body>
+<script>put_footer()</script>
 
-	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
-
-	</html>
+</body>
+</html>

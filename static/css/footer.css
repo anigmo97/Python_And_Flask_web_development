@@ -1,0 +1,12 @@
+.footer{
+	background-color: #34373d;
+	color:ghostwhite;
+}
+.footer_image:hover{
+	box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+	border-radius: 33px;
+}
+.footer_image_linkedin:hover{
+	box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+	border-radius: 5px;
+}

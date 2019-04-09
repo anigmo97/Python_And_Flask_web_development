@@ -1,0 +1,3 @@
+function put_footer(){
+	document.write("<footer class='footer p-2'><div class='column justify-content-center'>	<div align='center'><a href='https://www.linkedin.com/in/anigmo/'><img class = 'mb-1 footer_image_linkedin' src='/static/img/linkedin.svg' alt='See on github'></a><a class href='https://github.com/anigmo97'>	<img class = 'mb-1 footer_image' src='/static/img/github2.png' alt='See on github'></a><small class='m-3'>INFO © 2019 TFG made by Ángel Igualada Moraga (polytechnic university of valencia), All rights reserved</small></div></div></footer></body></html>")
+}

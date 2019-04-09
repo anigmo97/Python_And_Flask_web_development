@@ -1,7 +1,33 @@
 <html>
-	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
-	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
-	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" media="screen" href= "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified JS -->
+	<script type = "text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- Specific toogle -->
+	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+	<!-- Libraries to do graphics -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+	<!-- SCRIPTS CREADOS -->
+	<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_footer.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/rankings/put_embed_tweet.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/rankings/put_last_update.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/rankings/add_retweet_and_quote_info.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/rankings/put_top_users_section.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/rankings/toogle_on_click.js') }}"></script>
+	<!-- CSS CREADOS -->
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/dropdown.css') }}" />
+
+
+	
 	<head>
 			<style>
 					.top_element_click:hover + script + .hidden_tweet{	   
@@ -49,23 +75,6 @@
 					counter-increment: my-badass-counter;
 				}
 
-				.dropdown-item:hover{
-				background-color: darkslategray;
-			}
-
-			.footer{
-				background-color: #34373d;
-				color:ghostwhite;
-			}
-			.footer_image:hover{
-				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-				border-radius: 33px;
-			}
-			.footer_image_linkedin:hover{
-				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-				border-radius: 5px;
-			}
-
 			.TOP_members{
 				background-color: #34373d;
 				border-radius: 25px;
@@ -104,14 +113,13 @@
 	</head>
 	<body class="body">
 		<header>
-			<!-- <h3>{{ webpage_title }}</h3> -->
 		</header>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script type="text/javascript">
 			function get_action(form) {
 				form.action = '/search/'+document.getElementById("search_input").value;
 			}
 		</script>
+<!-- INICIO NAV BAR-->	
 		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<a class="navbar-brand" href="./">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,10 +146,6 @@
 								  {% for c in collections %}
 								  <a class="dropdown-item" style="color:ghostwhite;" href=".">{{ c }}</a>
 								  {% endfor %}
-
-						<!-- <a class="dropdown-item" href="#">Another action</a> -->
-						<!-- <div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Something else here</a> -->
 					  </div>
 					</li>
 					<li class="nav-item">
@@ -155,21 +159,13 @@
 					</div>
 					<br>
 					</nav>
-				
+<!-- FIN NAV BAR-->					
 					
 
 				<br/><br/><br/><br/>
 				{% if statistics_dict == false %}
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
-				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-				<script src="{{ url_for('static', filename='js/put_embed_tweet.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/put_last_update.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/add_retweet_and_quote_info.js') }}"></script>
-				<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-				<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
-				<script src="{{ url_for('static', filename='js/put_top_users_section.js') }}"></script>
-				<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 				
 				
 				<div class="custom-control custom-switch d-flex justify-content-center" id="switch_media_div">
@@ -188,7 +184,8 @@
 							});
 				</script>
 
-				
+<!--PRIMER TOP ------------------------------------------------------------------------------------------ -->
+
 				<h3>Top 10 de mensajes con más likes</h3>
 				<div id="most_liked_messages" class="list-group">
 					<dl class="faq">
@@ -254,21 +251,26 @@
 
 <!--TERCER TOP ------------------------------------------------------------------------------------------ -->
 					<br/><br/>
-					<p>Top 10 de usuarios que más likes han dado: {{ statistics_dict["global_most_favs_users"] }}</p>
+					<h3>Top 10 de usuarios que más likes han dado: </h3>
 					<div id="most_fav_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
 <!--CUARTO TOP ------------------------------------------------------------------------------------------ -->	
 					<br/><br/>
-					<p>Top 10 de usuarios con más mensajes publicados: {{ statistics_dict["global_most_tweets_users"] }}</p>
+					<h3>Top 10 de usuarios con más mensajes publicados:</h3>
 					<div id="most_messages_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
 <!--QUINTO TOP ------------------------------------------------------------------------------------------ -->	
 					<br/><br/>
-					<p>Top 10 de usuarios con más followers:  {{ statistics_dict["global_most_followers_users"] }}</p>
+					<h3>Top 10 de usuarios con más followers:</h3>
 					<div id="most_followers_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
+<!--SEXTO TOP ------------------------------------------------------------------------------------------ -->	
+					<br/><br/>
+					<h3>Top 10 usuarios de los cuales hemos recopilado más mensajes: </h3>
+					<div id="most_messages_local_users" class="d-flex w-100 mb-3 px-3 justify-content-center flex-column TOP_members"></div>
 
 					<script>
 						var global_most_favs_users = {{ statistics_dict["global_most_favs_users"]|tojson }};
 						var global_most_messages_users = {{ statistics_dict["global_most_tweets_users"]|tojson }}
 						var global_most_followers_users = {{ statistics_dict["global_most_followers_users"]|tojson }};
+						var local_most_messages_users  = {{ statistics_dict["local_most_messages_users"]|tojson }}
 						var users_dict = {{ users_dict|tojson }};
 						var image_1 = "{{ url_for('static', filename='img/1.svg') }}";
 						var image_2 = "{{ url_for('static', filename='img/2.svg') }}";
@@ -276,69 +278,17 @@
 						put_top_users_section(global_most_favs_users," Likes","most_fav_users",users_dict,image_1,image_2,image_3)
 						put_top_users_section(global_most_messages_users," Mensajes","most_messages_users",users_dict,image_1,image_2,image_3)
 						put_top_users_section(global_most_followers_users," Followers","most_followers_users",users_dict,image_1,image_2,image_3)
+						put_top_users_section(local_most_messages_users," Mensajes","most_messages_local_users",users_dict,image_1,image_2,image_3)
 					</script>
 
-
-<!--SEXTO TOP ------------------------------------------------------------------------------------------ -->	
-<br/><br/>
-			<p>Top 10 usuarios de los cuales hemos recopilado más mensajes: {{ statistics_dict["local_most_messages_users"] }}</p>
-				<div id="most_tweets_users" class="list-group">
-					<dl class="faq">
-				{% for e in statistics_dict["local_most_messages_users"] %}
-				{% if e[0] != 0 %}
-					<a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start top_element_click">
-
-						<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<dt></dt>
-							</div>
-							<div class="d-flex w-100 mb-3 justify-content-between flex-row">
-								<img src='https://avatars.io/twitter/{{ users_dict[e[0]]["screen-names"][0] }}' class="rounded-circle" alt="twt_profile" border="0" width="200" height="200"/>
-							</div>
-
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">user: {{ users_dict[e[0]]["screen-names"][0] }}</h5>
-						</div>
-						<small>{{ e[1] }} mensajes de este usuario han sido recopilados</small>
-					</a>
-					{% endif %}
-				{% endfor %}
-				</dl>
-				</div>
-			</dl>
 				{% endif %}
 
 
-		<script src="https://code.highcharts.com/highcharts.js"></script>
-		<script src="https://code.highcharts.com/modules/series-label.js"></script>
-		<script src="https://code.highcharts.com/modules/exporting.js"></script>
-		<script src="https://code.highcharts.com/modules/export-data.js"></script>
-
-	<script src="{{ url_for('static', filename='js/graph.js') }}"></script>
-
 
 	<br><br>
-		<!--fixed-bottom  -->
-		<footer class="footer p-2">
-				<div class="column justify-content-center">
-						
-					<div align="center">
-							<a href='https://www.linkedin.com/in/anigmo/'>
-							<img class = "mb-1 footer_image_linkedin" src="{{ url_for('static', filename='img/linkedin.svg') }}" alt='See on github'>
-						</a>
-						<a class href='https://github.com/anigmo97'>
-							<img class = "mb-1 footer_image" src="{{ url_for('static', filename='img/github2.png') }}" alt='See on github'>
-						</a>
-						<small class="m-3">INFO © 2019 TFG made by Ángel Igualada Moraga (polytechnic university of valencia), All rights reserved</small>
-					</div>
-				</div>		
-		</footer>
+	<script>put_footer()</script>
+	<script src="{{ url_for('static', filename='js/rankings/toogle_on_click.js') }}"></script>
 
 	</body>
-	
-	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/top_element_click.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/toogle_on_click.js') }}"></script>
-
-
 
 	</html>

@@ -1,7 +1,35 @@
 <html>
-	<!--<link rel="stylesheet" media="screen" href= "/static/bootstrap.min.css"> -->
-	<link rel="stylesheet" media="screen" href= "{{ url_for('static', filename='bootstrap.min.css') }}">
-	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='make_tables.css') }}" />
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" media="screen" href= "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified JS -->
+	<script type = "text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- Libraries to do graphics -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<!-- TODO: comprobar si esta se usa -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/list.pagination.js/0.1.1/list.pagination.min.js"></script>
+	<!-- Library used to do list tables with sorting, filtering and pagination-->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+	<!-- Library used to be able to access to nested atributes using string Eg: User.name -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"> </script>
+
+	<!-- SCRIPTS CREADOS -->
+	<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_pie_char.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_semi_circle_graph.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_bar_char.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/make_table_with_special_doc.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_footer.js') }}"></script>
+	<!-- CSS CREADOS -->
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/dropdown.css') }}" />
+
+
 
 	<head>
 			<style>
@@ -50,23 +78,6 @@
 				outline:none;
 				border-color:#aaa;
 			}
-			.dropdown-item:hover{
-				background-color: darkslategray;
-			}
-
-			.footer{
-				background-color: #34373d;
-				color:ghostwhite;
-			}
-
-			.footer_image:hover{
-				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-				border-radius: 33px;
-			}
-			.footer_image_linkedin:hover{
-				box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-				border-radius: 5px;
-			}
 
 
 
@@ -77,12 +88,13 @@
 		<header>
 			<!-- <h3>{{ webpage_title }}</h3> -->
 		</header>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script type="text/javascript">
 			function get_action(form) {
 				form.action = '/search/'+document.getElementById("search_input").value;
 			}
 		</script>
+
+<!-- INICIO NAV BAR-->	
 		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<a class="navbar-brand" href="./">TFG_NAV</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,19 +141,13 @@
 					  </form>
 					</div>
 					</nav>
-					
+<!-- FIN NAV BAR-->	
+
+
 				<br/><br/><br/><br/>
 				{% if statistics_dict == false %}
 				<p>There is no statistics file for this collection {{ current_collection }}</p>
 				{% else %}
-				<script src="{{ url_for('static', filename='js/put_pie_char.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/put_semi_circle_graph.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/put_bar_char.js') }}"></script>
-				<script src="{{ url_for('static', filename='js/make_table_with_special_doc.js') }}"></script>
-				<script src="https://code.highcharts.com/highcharts.js"></script>
-				<script src="https://code.highcharts.com/modules/exporting.js"></script>
-				<script src="//cdnjs.cloudflare.com/ajax/libs/list.pagination.js/0.1.1/list.pagination.min.js"></script>
-				<p>Mensajes recopilados: {{ statistics_dict["messages_count"] }}</p>
 
 
 <!-- PRIMERA FILA ------------------------------------------------------------------------------------------ -->
@@ -150,10 +156,9 @@
 				<div class="mb-1 graph" id="search_type_distribution"></div>
 			</div>
 
-				<script>put_pie_char("pie_char_messages_count","Distribución mensajes recuperados",[["tweets", {{ statistics_dict["tweets_count"] }}],[ "retweets",{{ statistics_dict["retweets_count"] }}]])</script>
+				<script>put_pie_char("pie_char_messages_count","Distribución mensajes recuperados ("+{{ statistics_dict["tweets_count"] }}+")",[["tweets", {{ statistics_dict["tweets_count"] }}],[ "retweets",{{ statistics_dict["retweets_count"] }}]])</script>
 
 
-				
 				<script>
 
 					var mensajes_recopilados = {{ statistics_dict["messages_count"] }};
@@ -194,6 +199,7 @@
 					put_semi_circle_graph("search_type_distribution","Distribución <br> tipos de <br> búsqueda",series_data,"Mensajes");
 				</script>
 <!-- SEGUNDA FILA ------------------------------------------------------------------------------------------ -->
+				<br><br>
 				<div id="segunda_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
 				<div class="mb-1 graph" id="tweets_bar_char"></div>
 				<div class="mb-1 graph" id="retweets_bar_char"></div>
@@ -213,12 +219,11 @@
 					{{ statistics_dict["retweets_with_quotes_count"] }},{{ statistics_dict["retweets_without_quotes_count"] }},{{ statistics_dict["retweets_with_replies_and_quotes_count"] }}]
 				}]
 				);
-				
 			</script>
 
 
 <!-- TERCERA FILA ------------------------------------------------------------------------------------------ -->
-
+			<br><br>
 			<div id="tercera_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
 				<div class="mb-1 graph" id="send_way_distribution"></div>
 				<div class="mb-1 graph" id="account_distribution"></div>
@@ -256,7 +261,7 @@
 
 
 <!-- CUARTA FILA ------------------------------------------------------------------------------------------ -->
-
+			
 			<div id="cuarta_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
 				<div class="mb-1 graph" id="not_verified_account_distribution"></div>
 				<div class="mb-1 graph" id="verified_account_distribution"></div>
@@ -277,16 +282,10 @@
 			
 			</script>
 
-			// <script>put_pie_char("not_verified_account_distribution","Distribución mensajes cuentas no verificadas",
-			// [["tweets", {{ statistics_dict["not_verified_account_tweets"] }}],[ "retweets",{{ statistics_dict["not_verified_account_retweets"] }}]])
-			// </script>
-			// <script>put_pie_char("verified_account_distribution","Distribución mensajes cuentas verificadas",
-			// [["tweets", {{ statistics_dict["verified_account_tweets"] }}],[ "retweets",{{ statistics_dict["verified_account_retweets"] }}]])</script>
-
-			<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-			<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"> </script>
 
 <!-- CUARTA FILA ------------------------------------------------------------------------------------------ -->
+
+	<h3>Mensajes recopilados por usuario según su verificación</h3>
 
 			<div id="cuarta_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
 				<div id="not_verified_account">
@@ -330,8 +329,6 @@
 				make_table_with_special_doc("verified_account","tabla_usuarios_verificados_header","tabla_usuarios_verificados",['user_id','mensajes'],registros_verificadas)
 
 			</script>
-			//<script>make_table_with_special_doc("busquedas_por_query","tabla_busquedas_por_query_header_container","tabla_busquedas_por_query",['query','captured_tweets',"last_execution"],{{ query_file|tojson }})</script>
-
 
 
 
@@ -496,33 +493,13 @@
 	{% endif %}
 
 
-		<script src="https://code.highcharts.com/highcharts.js"></script>
-		<script src="https://code.highcharts.com/modules/series-label.js"></script>
-		<script src="https://code.highcharts.com/modules/exporting.js"></script>
-		<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
 
 
 		<br><br>
-		<!--fixed-bottom  -->
-		<footer class="footer p-2">
-				<div class="column justify-content-center">
-						
-					<div align="center">
-							<a href='https://www.linkedin.com/in/anigmo/'>
-							<img class = "mb-1 footer_image_linkedin" src="{{ url_for('static', filename='img/linkedin.svg') }}" alt='See on github'>
-						</a>
-						<a class href='https://github.com/anigmo97'>
-							<img class = "mb-1 footer_image" src="{{ url_for('static', filename='img/github2.png') }}" alt='See on github'>
-						</a>
-						<small class="m-3">INFO © 2019 TFG made by Ángel Igualada Moraga (polytechnic university of valencia), All rights reserved</small>
-					</div>
-				</div>		
-		</footer>
+		<script>put_footer()</script>
 		
 	</body>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script type = "text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/get_dropdown_selection.js') }}"></script>
 
 
 	</html>
