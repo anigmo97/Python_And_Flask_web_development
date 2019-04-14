@@ -75,21 +75,22 @@ def politics_tweets():
 	special_doc_dict = get_mongo_special_files_dict()
 	politicos_por_partido = {"PP" : 0, "PSOE":0,"CIUDADANOS":0,"PODEMOS":0, "COMPROMIS":0 ,"VOX":0}
 	likes_por_partido = {"PP" : 0, "PSOE":0,"CIUDADANOS":0,"PODEMOS":0, "COMPROMIS":0 ,"VOX":0}
-	for k,v in special_doc_dict["searched_users_file"].items():
-		if k != '_id' and k != 'total_captured_tweets':
-			if v["partido"] != None:
-				politicos_por_partido[v["partido"]] += 1
-
-	for k,v in special_doc_dict["likes_list_file"].items():
-		if k != '_id' and k != 'total_captured_tweets':
-			user_sreen_name = v["user_screen_name"]
-			if special_doc_dict["searched_users_file"][user_sreen_name]["partido"] != None:
-				aux = v["num_likes"]
-				if type(aux) == int:
-					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += aux
-				else:
-					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))
-	
+	if special_doc_dict.get("searched_users_file",None) != None:
+		for k,v in special_doc_dict["searched_users_file"].items():
+			if k != '_id' and k != 'total_captured_tweets':
+				if v["partido"] != None:
+					politicos_por_partido[v["partido"]] += 1
+	if special_doc_dict.get("likes_list_file",None) != None:
+		for k,v in special_doc_dict["likes_list_file"].items():
+			if k != '_id' and k != 'total_captured_tweets':
+				user_sreen_name = v["user_screen_name"]
+				if special_doc_dict["searched_users_file"][user_sreen_name]["partido"] != None:
+					aux = v["num_likes"]
+					if type(aux) == int:
+						likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += aux
+					else:
+						likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))
+		
 	try:
 		return render_template("politics_tweets.html",collections=collections,collection=mongo_conector.current_collection,**special_doc_dict,
 		likes_por_partido=likes_por_partido,politicos_por_partido=politicos_por_partido)
