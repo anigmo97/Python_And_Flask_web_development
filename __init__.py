@@ -125,6 +125,7 @@ def get_names():
 		names = request.get_json()
 		if type(names) == str:
 			mongo_conector.current_collection = names
+			print("\n\n\n\n collection changed to {}".format(names))
 		else:
 			raise Exception("Unexpected collection name")		
 	return '', 200

@@ -84,8 +84,8 @@ function make_table_with_percentage_bar(container_id,table_header_container,tabl
 				field_name = fields_to_get[field_index];
 				aux[field_name] = special_doc[index][field_name];
 			}
-			if (aux[divisor_field] > 0){
-				percentage_without_sign = ((aux[divider_field] / aux[divisor_field])*100).toFixed(2)
+			if (special_doc[index][divisor_field] > 0){
+				percentage_without_sign = ((special_doc[index][divider_field] / special_doc[index][divisor_field])*100).toFixed(2)
 				aux["percentage"] = percentage_without_sign + '%'
 			}else{
 				percentage_without_sign = '0.00'

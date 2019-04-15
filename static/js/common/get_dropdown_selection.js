@@ -2,7 +2,7 @@
 // con una consulta post
 $('#collection_dropdown_menu').click(function(event) {
 	var current_collection = $(event.target).text();
-	//alert("Current collection : "+current_collection)
+	alert("Current collection : "+current_collection)
 	$.ajax({
 		type: "POST",
 		contentType: "application/json;charset=utf-8",

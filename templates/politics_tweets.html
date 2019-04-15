@@ -18,7 +18,6 @@
 
 
 	<!-- SCRIPTS CREADOS -->
-	<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/common/put_bar_char.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/common/put_semi_circle_graph.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/common/make_table_with_special_doc.js') }}"></script>
@@ -302,14 +301,19 @@
 	<!--<ul class="pagination"></ul>-->
 </div>
 	<script>
-	// var json_likes_list_file = {{ likes_list_file|tojson }}
-	// for( var key in json_likes_list_file){
-	// 	json_likes_list_file[key]["num_likes_capturados"]
-	// }
+	var json_likes_list_file = {{ likes_list_file|tojson }};
+	var capturados;
+	var pasadas;
+	for( var key in json_likes_list_file){
+		capturados = json_likes_list_file[key]["num_likes_capturados"]
+		pasadas = json_likes_list_file[key]["veces_recorrido"]
+		json_likes_list_file[key]["likes_capturados"] = capturados +" (" +pasadas +" veces)"
+	}
 	make_table_with_percentage_bar('likes_capturados_por_tweet','likes_capturados_por_tweet_header_container','tabla_likes_capturados_por_tweet',
-	['tweet_id','user_screen_name','num_likes_capturados','num_likes','last_like_resgistered'],
-	"num_likes_capturados","num_likes",
-	{{ likes_list_file|tojson }})
+	['tweet_id','user_screen_name','likes_capturados','num_likes','last_like_resgistered'],
+	"num_likes_capturados",
+	"num_likes",
+	json_likes_list_file)
 	</script>
 
 
@@ -338,6 +342,8 @@
 
 <br><br>
 <script>put_footer()</script>
+<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+
 
 </body>
 </html>
