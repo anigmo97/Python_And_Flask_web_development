@@ -42,9 +42,8 @@ def get_users_screen_name_dict_of_tweet_ids(tweet_id_list,collection):
     cursor_resultados = db[collection].find({'_id': {'$in': tweet_id_list}},{'_id':1,'user.screen_name':1})
     dict_tweet_user = {}
     for e in cursor_resultados:
-        print(e)
         dict_tweet_user[e["_id"]] = e["user"]["screen_name"]
-    print(dict_tweet_user)
+    # print(dict_tweet_user)
     return dict_tweet_user
 
 def get_users_screen_name_dict_of_tweet_ids_for_tops_in_statistics_file(statistics_file,collection):

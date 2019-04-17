@@ -59,7 +59,13 @@ function make_table_with_document_link(container_id,table_header_container,table
 			var current = special_doc[index]
 			for( var field_index in fields_to_get){
 				field_name = fields_to_get[field_index];
-				aux[field_name] = _.get(current, field_name).toString(); // this is use to access directly to nested elements ( user.id)
+				try {
+					aux[field_name] = _.get(current, field_name).toString() ; // this is use to access directly to nested elements ( user.id)
+				  }
+				  catch(error) {
+					console.error(error);
+					aux[field_name] = null;
+				  }
 			}
 			values.push(aux);
 		}
