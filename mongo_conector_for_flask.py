@@ -59,6 +59,12 @@ def get_users_screen_name_dict_of_tweet_ids_for_tops_in_statistics_file(statisti
 def get_tweet_dict_by_tweet_id_using_regex(regex,collection):
     return  { x['_id'] : x for x in db[collection].find({'_id':{'$regex':regex, '$nin': special_doc_ids}})}
 
+def get_likes_info_for_flask(collection,limit=0):
+    """Returns a list of tweets from the collection that have its 'likes_info.likes_count_updated' field set to False"""
+    lista_tweets = list(db[collection].find({"has_likes_info" : True,'_id': {'$nin': special_doc_ids }},{"likes_info":True}).limit(limit))
+    print("[LIKES INFO FOR FLASK] {} tweets retrieved".format(len(lista_tweets)))
+    return lista_tweets
+
 
 def get_tweet_by_id(id_str,collection):
     return db[collection].find_one({'_id':id_str})

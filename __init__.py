@@ -75,25 +75,30 @@ def politics_tweets():
 	special_doc_dict = get_mongo_special_files_dict()
 	politicos_por_partido = {"PP" : 0, "PSOE":0,"CIUDADANOS":0,"PODEMOS":0, "COMPROMIS":0 ,"VOX":0}
 	likes_por_partido = {"PP" : 0, "PSOE":0,"CIUDADANOS":0,"PODEMOS":0, "COMPROMIS":0 ,"VOX":0}
+	linked_likes_info = mongo_conector.get_likes_info_for_flask(mongo_conector.current_collection)
 	if special_doc_dict.get("searched_users_file",None) != None:
 		for k,v in special_doc_dict["searched_users_file"].items():
 			if k != '_id' and k != 'total_captured_tweets':
 				if v["partido"] != None:
 					politicos_por_partido[v["partido"]] += 1
-	if special_doc_dict.get("likes_list_file",None) != None:
-		for k,v in special_doc_dict["likes_list_file"].items():
-			if k != '_id' and k != 'total_captured_tweets':
-				user_sreen_name = v["user_screen_name"]
-				if special_doc_dict["searched_users_file"][user_sreen_name]["partido"] != None:
-					aux = v["num_likes"]
-					if type(aux) == int:
-						likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += aux
-					else:
-						likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))
+	
+	linked_aux = []
+	if len(linked_likes_info)>0:
+		for e in linked_likes_info:
+			likes_info = e["likes_info"]
+			linked_aux.append(likes_info)
+			user_sreen_name = likes_info["user_screen_name"]
+			if special_doc_dict["searched_users_file"][user_sreen_name]["partido"] != None:
+				aux = likes_info["num_likes"]
+				if type(aux) == int:
+					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += aux
+				else:
+					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))	
+	linked_likes_info=linked_aux
 		
 	try:
 		return render_template("politics_tweets.html",collections=collections,collection=mongo_conector.current_collection,**special_doc_dict,
-		likes_por_partido=likes_por_partido,politicos_por_partido=politicos_por_partido)
+		likes_por_partido=likes_por_partido,politicos_por_partido=politicos_por_partido,linked_likes_info=linked_likes_info)
 	except Exception as e:
 		return str(e)
 
