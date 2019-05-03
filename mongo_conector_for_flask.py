@@ -80,20 +80,8 @@ def get_count_of_a_collection(collection):
 #########################################################################################################################################
 
 def do_additional_actions_for_statistics_file(statistics_dict,collection):
-    def delete_statistics_file():
-        print("[MONGO STATISTICS WARN] Deleting statistics file")
-        db[collection].remove({"_id":statistics_file_id})
-        print("[MONGO STATISTICS WARN] Statistics file has been deleted")
-
-    if statistics_dict["messages_count"]==0:
-        print("[MONGO STATISTICS WARN] El fichero está corrupto messages_count=0 se recalcularán las estadísticas...")
-        delete_statistics_file()
-        return None
-    elif get_count_of_a_collection(collection) not in range(statistics_dict["messages_count"],statistics_dict["messages_count"]+len(special_doc_ids)+1):
-        print("[MONGO STATISTICS WARN] El fichero está corrupto messages_count={} database_count={}".format(statistics_dict["messages_count"],get_count_of_a_collection(collection)))
-        delete_statistics_file()
-        return None
-
+    """Do a preprocess to treat the keys with '.' """
+    print("[MONGO STATISTICS INFO] Changing bullets for dots")
     way_of_send_with_keys_with_dots =  change_bullet_in_keys_for_dot(statistics_dict["way_of_send_counter"])
     statistics_dict["way_of_send_counter"] = way_of_send_with_keys_with_dots
     return statistics_dict
