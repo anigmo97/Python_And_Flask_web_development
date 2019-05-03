@@ -217,7 +217,9 @@
 					[ "VOX",dict_tweets.VOX]
 				];
 				var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
-				put_semi_circle_graph("tweets_distribution","Distribución <br> tweets <br> capturados",series_data,"Mensajes",colors);
+				var total_tweets = dict_tweets.PP + dict_tweets.PSOE + dict_tweets.CIUDADANOS + dict_tweets.PODEMOS + dict_tweets.COMPROMIS + dict_tweets.VOX;
+				var title = "Distribución <br> tweets <br> capturados <br>("+total_tweets+")"
+				put_semi_circle_graph("tweets_distribution",title,series_data,"Mensajes",colors);
 			</script>
 
 			<script>
@@ -232,8 +234,10 @@
 							[ "COMPROMIS",dict_likes.COMPROMIS],
 							[ "VOX",dict_likes.VOX]
 						];
+						var total_likes = dict_likes.PP + dict_likes.PSOE + dict_likes.CIUDADANOS + dict_likes.PODEMOS + dict_likes.COMPROMIS + dict_likes.VOX;
 						var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
-						put_semi_circle_graph("likes_distribution","Distribución <br> likes <br> capturados",series_data,"Likes",colors);
+						var title = "Distribución <br> likes <br> capturados <br>("+total_likes+")"
+						put_semi_circle_graph("likes_distribution",title,series_data,"Likes",colors);
 					}
 					</script>
 
