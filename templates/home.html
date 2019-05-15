@@ -11,6 +11,7 @@
 	<!-- SCRIPTS CREADOS -->
 	<script src="{{ url_for('static', filename='js/common/put_footer.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/home/put_file_image.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/home/put_likes_count_table.js') }}"></script>
 	<!-- CSS CREADOS -->
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
@@ -161,6 +162,35 @@
 					put_file_image("likes",{{ likes_list_file|tojson }},"likes_file",error_image_url,sucess_image_url);
 					put_file_image("users",{{ users_file|tojson }} ,"users_file",error_image_url,sucess_image_url);
 				</script>
+				<br><br>
+				<h3>DOCUMENTOS DE CONTEO DE LIKES DE LA COLECCIÓN (PARTICIONADO)</h3>
+
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">Id</th>
+							<th scope="col">Número usuarios</th>
+							<th scope="col">Visualizar</th>
+						</tr>
+					</thead>
+
+					<tbody id="tabla_likes_count">
+				
+					</tbody>
+					
+				</table>
+		<script>put_likes_count_table("tabla_likes_count",{{ likes_count_files_list|tojson }})</script>
+		<script>
+			var error_image_url = "{{ url_for('static', filename='img/file_error.png') }}";
+			var sucess_image_url = "{{ url_for('static', filename='img/file_correct.png') }}";
+			var likes_count_files_dict = {{ likes_count_files_list|tojson }}
+			var num_docs = Object.keys(likes_count_files_dict).length
+			var e = null
+			for (var i=0;i<num_docs;i++) {
+				e = likes_count_files_dict[i];
+				put_file_image(e["_id"],e,e["_id"],error_image_url,sucess_image_url)
+			}	
+		</script>
 		<br><br>
 		<script>put_footer()</script>
 		<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>

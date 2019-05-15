@@ -47,7 +47,9 @@ def homepage():
 		last_update = special_doc_dict["statistics_dict"]["ultima_modificación"]
 
 	try:
-		return render_template("home.html", collections=collections,collection=mongo_conector.current_collection,last_update=last_update,**special_doc_dict)
+		return render_template("home.html", collections=collections,collection=mongo_conector.current_collection,
+		last_update=last_update,likes_count_files_list=mongo_conector.get_likes_count_files_dict(mongo_conector.current_collection),
+		**special_doc_dict)
 	except Exception as e:
 		return str(e)
 
@@ -155,6 +157,9 @@ def get_javascript_data():
 def show_statistics_file(path): 
 	special_doc_dict = get_mongo_special_files_dict()
 	special_doc = special_doc_dict.get(path,None)
+	if special_doc == None:
+		special_doc_dict = mongo_conector.get_likes_count_files_dict_with_id_as_key(mongo_conector.current_collection)
+		special_doc = special_doc_dict.get(path,None)
 	return jsonify(special_doc)
 
 @app.route('/search/',defaults={'path':''})

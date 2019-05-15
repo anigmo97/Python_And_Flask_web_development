@@ -23,6 +23,7 @@ function put_file_image(container_id,file,file_name,error_image,sucess_image){
 				href = "/special_file/users_file";
 			  break;
 			default:
+				href = "/special_file/"+file_name
 			  console.log('default');
 		  } 
 		document.getElementById(container_id).innerHTML="<a href='"+href+"'><img class='sucess_file' src='"+sucess_image+"' alt='File retrieved correctly'></a>"

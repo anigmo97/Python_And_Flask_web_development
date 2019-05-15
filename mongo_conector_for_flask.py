@@ -1,4 +1,5 @@
-from pymongo import MongoClient,errors
+from pymongo import MongoClient,errors,ASCENDING,DESCENDING
+from pymongo.collation import Collation
 from bson.objectid import ObjectId
 # from global_functions import change_dot_in_keys_for_bullet,change_bullet_in_keys_for_dot
 import traceback
@@ -74,6 +75,21 @@ def get_collection_names():
 
 def get_count_of_a_collection(collection):
     return db[collection].count()
+
+def get_likes_count_files(collection):
+    """Returns likes count files of  collection"""
+    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    return [ x for x in cursor_resultados]
+
+def get_likes_count_files_dict(collection):
+    """Returns likes count files of  collection"""
+    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    return { x[0]:x[1] for x in enumerate(cursor_resultados)}
+
+def get_likes_count_files_dict_with_id_as_key(collection):
+    """Returns likes count files of  collection"""
+    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    return { x["_id"] : x for x in cursor_resultados}
 
 #########################################################################################################################################
 ############################### SPECIAL DOCS MANAGEMENT #################################################################################
