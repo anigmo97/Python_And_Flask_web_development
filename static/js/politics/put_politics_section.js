@@ -8,11 +8,13 @@ function put_politics_section(politics_list,political_party,container_id,json_se
 		if (i > 0 && i%5==0){
 			inner_html_to_add += "</div>" + "<div class='d-flex w-100 p-3 rounded mb-3 justify-content-between flex-row space-between "+political_party+"_members '>"
 		}
-		inner_html_to_add += "<div class='member p-2' align='center'>"
-		+"<img src='https://avatars.io/twitter/"+politics_list[x]+
-		"' class='rounded-circle' alt='twt_profile' border='0' width='100' height='100'/>"+
-		"<h5>"+politics_list[x]+"</h5>"+
-		"<small>"+json_searched_users_file[politics_list[x]]["captured_tweets"]+" tweets</small>"
+		inner_html_to_add += "<div class='clickable_div member p-2' align='center'>"
+		+"<img src='https://avatars.io/twitter/"+politics_list[x]
+		+"' class='rounded-circle' alt='twt_profile' border='0' width='100' height='100'/>"
+		+"<h5>"+politics_list[x]+"</h5>"
+		+"<a href='/searched_user_registry/"+json_searched_users_file[politics_list[x]]["user_name"]
+		+"&"+json_searched_users_file[politics_list[x]]["user"]+"'></a>"
+		+"<small>"+json_searched_users_file[politics_list[x]]["captured_tweets"]+" tweets</small>"
 		+"</div>"
 		i++;
 	}

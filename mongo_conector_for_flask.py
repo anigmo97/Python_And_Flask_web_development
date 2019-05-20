@@ -91,6 +91,14 @@ def get_likes_count_files_dict_with_id_as_key(collection):
     cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
     return { x["_id"] : x for x in cursor_resultados}
 
+def get_num_of_captured_likes_for_user(screen_name,collection):
+    cursor_resultados = db[collection].find({"user.screen_name": screen_name})
+    likes_capturados = 0
+    for e in cursor_resultados:
+        if e["has_likes_info"]:
+            likes_capturados+= len(e["likes_info"]["users_who_liked"])
+    return likes_capturados
+
 #########################################################################################################################################
 ############################### SPECIAL DOCS MANAGEMENT #################################################################################
 #########################################################################################################################################

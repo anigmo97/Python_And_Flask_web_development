@@ -1,0 +1,165 @@
+<html>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" media="screen" href= "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified JS -->
+	<script type = "text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- Library used to do list tables with sorting, filtering and pagination-->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+	<!-- Library used to be able to access to nested atributes using string Eg: User.name -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"> </script>
+
+	<!-- SCRIPTS CREADOS -->
+	<script src="{{ url_for('static', filename='js/common/put_footer.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/search/make_table_with_document_link.js') }}"></script>
+	<!-- CSS CREADOS -->
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
+	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/dropdown.css') }}" />
+
+	<head>
+		<style>
+			.file_img {
+				max-width: 50px;
+				max-height: 50px;
+			}
+		
+			.searched_user {
+				background-color: #34373d;
+				border-radius: 25px !important;
+				color : white;
+			}
+			table{
+				color : white;
+				font-size: 20px;
+			}
+			table>tbody>tr {
+				color:yellow;
+			}
+			.screen_name{
+				font-size: 20px;
+			}
+			.small_small{
+				font-size: 11px;
+			}
+			.icon_round{
+				border-radius: 33px !important;
+			}
+			.icon_round:hover {
+  				box-shadow: 0 0 20px rgba(0, 0, 0, 1) !important;
+					border-radius: 33px !important;
+					cursor: hand; 
+				}
+		</style>
+
+	</head>
+	<body class="body">
+		<header>
+			<!-- <h3>{{ webpage_title }}</h3> -->
+		</header>
+
+				<script type="text/javascript">
+					function get_action(form) {
+						form.action = '/search/'+document.getElementById("search_input").value;
+					}
+				</script>
+
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+				<a class="navbar-brand" href="/">TFG_NAV</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				  <span class="navbar-toggler-icon"></span>
+				</button>
+			  
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				  <ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					  <a class="nav-link" href="/statistics">General Statistics<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" href="/rankings">Rankings</a>
+					</li>
+					<li class="nav-item">
+							<a class="nav-link" href="/politics_tweets">Politics tweets analysis</a>
+					</li>
+
+
+
+					<li class="nav-item dropdown" >
+							<a class="nav-link dropdown-toggle"  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Collection
+							</a>
+							<div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown" id="collection_dropdown_menu">
+								{% for c in collections %}
+								<a class="dropdown-item" style="color:ghostwhite;" href=".">{{ c }}</a>
+								{% endfor %}
+
+					  </div>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">collection = {{ collection }}</a>
+					</li>
+				  </ul>
+				  <form id="search_form" onsubmit="get_action(this);" class="form-inline my-2 my-lg-0" onSubmit="">
+					<input id="search_input" class="form-control mr-sm-2 busqueda" type="search" placeholder="Search" aria-label="Search">
+					<button id="search_button" class="btn btn-outline-success my-2 my-sm-0 busqueda" type="submit" value="Go" >Search</button>
+				  </form>
+				</div>
+				</nav>
+
+				<br/><br/><br/><br/><br><br>
+				<div class='d-flex w-100  p-3 ml-2 rounded mb-3 justify-content-between flex-row space-between searched_user'>
+						<div class='d-flex flex-column' align="center">
+								<img src='https://avatars.io/twitter/{{ screen_name }}' class='rounded-circle' align="center" alt='twt_profile' border='0' width='300' height='300'/>
+								<div class='d-flex flex-row justify-content-center align-items-center flex-row space-between'>
+										<a href="https:twitter.com/{{ screen_name }}" target='_blank'>
+											<img id="twitter" class="icon_round m-3" src="/static/img/twitter.svg" height="60" width="60" />
+										</a>
+									<a href="{{ url }}" target='_blank'>
+										<img id="wiki" class="icon_round" src="/static/img/wiki.png" height="60" width="60" />
+										</a>
+								</div>
+						</div>
+						<div class='d-flex p-3 flex-column'>
+								<h1>{{ name }} 
+									<small class="screen_name">{{ " " }} (@{{ screen_name }})</small>
+									
+									{% if searched_user_registry.verified %}
+									<img src="/static/img/verified.svg" height="20" width="20" />
+									
+									<small class="small_small">verified user</small>
+									{% endif %}
+									
+								</h1>
+								<br>
+								
+								<p>{{ resumen }}</p>
+								<br><br>
+								<br><br>
+								<table >
+									<tr align="center">
+										<td>tweets publicados</td>
+										<td>seguidores</td>
+										<td>siguiendo</td>
+										<td>tweets capturados</td>
+										<td>likes capturados</td>
+									</tr>
+									<tbody>
+										<tr align="center">
+											<td>{{ searched_user_registry.tweets }}</td>
+											<td>{{ searched_user_registry.following }}</td>
+											<td>{{ searched_user_registry.followers }}</td>
+											<td>{{ searched_user_registry.captured_tweets }}</td>
+											<td>{{ num_captured_likes }}</td> 
+										</tr>  
+									</tbody>
+								</table>
+						</div>
+			</div>
+				<script>put_footer()</script>
+				<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+
+
+	</body>	
+
+	</html>

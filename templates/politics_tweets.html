@@ -27,6 +27,7 @@
 	<script src="{{ url_for('static', filename='js/politics/get_num_tweets_by_party.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/politics/get_num_likes_by_party.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/politics/make_table_with_percentage_bar.js') }}"></script>
+
 	<!-- CSS CREADOS -->
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
@@ -89,9 +90,11 @@
 				stroke-width: 2px;
 			}
 			.primera_fila{
-				display: flex
+				display: flex;
 			}
-
+			.clickable_div:hover{
+				cursor: pointer;
+			}
 
 
 			</style>
@@ -347,6 +350,7 @@
 <br><br>
 <script>put_footer()</script>
 <script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+<script src="{{ url_for('static', filename='js/politics/do_member_clickable.js') }}"></script>
 
 
 </body>

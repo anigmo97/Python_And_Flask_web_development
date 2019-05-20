@@ -6,6 +6,11 @@ import sys
 import json
 import mongo_conector_for_flask as mongo_conector
 from django.utils.safestring import mark_safe
+import wikipedia
+try: 
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    from bs4 import BeautifulSoup
 
 collections = mongo_conector.get_collection_names()
 with_media_state = False
@@ -25,6 +30,64 @@ def get_mongo_special_files_dict():
 	docs_dict["users_file"] = mongo_conector.get_users_file(mongo_conector.current_collection)
 	return docs_dict
 
+def get_article_summary(person_name,topic=""):
+	resumen = ""
+	url = ""
+	try:
+		wikipedia.set_lang("es")
+		article = wikipedia.search("{} {}".format(person_name,topic))[0]
+		pg = wikipedia.page(article)
+		resumen = pg.summary
+		resumen = ".".join(resumen.split(".")[0:4])
+	except wikipedia.DisambiguationError as e:
+		try:
+			pg = wikipedia.page(e.options[0])
+			resumen = pg.summary
+			resumen = ".".join(resumen.split(".")[0:4])
+		except wikipedia.DisambiguationError:
+			pg = wikipedia.page(e.options[1])
+			resumen = pg.summary
+			resumen = ".".join(resumen.split(".")[0:4])
+	return resumen,pg.url
+
+
+def get_main_image(person_name,topic=""):
+	main_image_url = ""
+	try:
+		wikipedia.set_lang("es")
+		article = wikipedia.search("{} {}".format(person_name,topic))[0]
+		pg = wikipedia.page(article)
+		main_image_url = pg.images[0]
+	except wikipedia.DisambiguationError as e:
+		try:
+			pg = wikipedia.page(e.options[0])
+			main_image_url = pg.images[0]
+		except wikipedia.DisambiguationError:
+			pg = wikipedia.page(e.options[1])
+			main_image_url = pg.images[0]
+	return main_image_url
+
+def get_main_image2(person_name,topic=""):
+	main_image_url = ""
+	try:
+		wikipedia.set_lang("es")
+		article = wikipedia.search("{} {}".format(person_name,topic))[0]
+		pg = wikipedia.page(article)
+		soup = BeautifulSoup(str(pg.html),'html.parser')
+		main_image_url = soup.select_one(".infobox.biography.vcard>tr>td>a.image")
+	except wikipedia.DisambiguationError as e:
+		print("ex1")
+		try:
+			pg = wikipedia.page(e.options[0]) 
+			soup = BeautifulSoup(pg.html,'html.parser')
+			main_image_url = soup.select_one(".infobox.biography.vcard>tr>td>a.image")
+		except wikipedia.DisambiguationError:
+			print("ex2")
+			pg = wikipedia.page(e.options[1]) 
+			soup = BeautifulSoup(pg.html,'html.parser')
+			main_image_url = soup.select_one(".infobox.biography.vcard>tr>td>a.image")
+	print(main_image_url)
+	return main_image_url
 
 app = Flask(__name__)
 def signal_handler_control_c(sig, frame):
@@ -173,6 +236,27 @@ def show_tweet_search_result(path):
 	except Exception as e:
 		return str(e)
 
+@app.route('/searched_user_registry/',defaults={'path':''})
+@app.route('/searched_user_registry/<path:path>')
+def show_searched_user_registry(path): 
+	if(len(path) >0 and path[-1]=='?'):
+		path = path[0:-1]
+	try:
+		splitted_path = path.split("&")
+		name = splitted_path[0]
+		screen_name = splitted_path[1] 
+	except:
+		pass
+	resumen,url = get_article_summary(name,"politica españa")
+	searched_user_registry = mongo_conector.get_searched_users_file(mongo_conector.current_collection)[screen_name]
+	num_captured_likes = mongo_conector.get_num_of_captured_likes_for_user(screen_name.lower(),mongo_conector.current_collection)
+	try:
+		return render_template("searched_user_registry.html", collections=collections,collection=mongo_conector.current_collection,
+		name=name,screen_name=screen_name,resumen=resumen,searched_user_registry=searched_user_registry,
+		num_captured_likes=num_captured_likes,url=url)
+	except Exception as e:
+		return str(e)
+
 @app.route('/show_file/',defaults={'path':''})
 @app.route('/show_file/<path:path>')
 def show_file(path): 
@@ -180,6 +264,8 @@ def show_file(path):
 		path = path[0:-1]
 	doc = mongo_conector.get_tweet_by_id(path,mongo_conector.current_collection)
 	return jsonify(doc)
+
+
 
 if __name__ == "__main__":
 	try:
