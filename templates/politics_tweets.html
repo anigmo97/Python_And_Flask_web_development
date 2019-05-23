@@ -226,21 +226,23 @@
 			</script>
 
 			<script>
-					var json_users_file = {{ users_file|tojson }};
-					if (json_users_file!= null){
-						var dict_likes = get_num_likes_by_party(json_users_file);
-						var series_data = [
-							[ "PP", dict_likes.PP],
-							[ "PSOE",dict_likes.PSOE],
-							[ "CIUDADANOS",dict_likes.CIUDADANOS],
-							[ "PODEMOS",dict_likes.PODEMOS],
-							[ "COMPROMIS",dict_likes.COMPROMIS],
-							[ "VOX",dict_likes.VOX]
+					var likes_por_partido = {{ captured_likes_por_partido|tojson }}
+					alert(JSON.stringify(likes_por_partido))
+					if (likes_por_partido != null){
+					var series_data = [];
+					var series_data = [
+							[ "PP", likes_por_partido.PP],
+							[ "PSOE",likes_por_partido.PSOE],
+							[ "CIUDADANOS",likes_por_partido.CIUDADANOS],
+							[ "PODEMOS",likes_por_partido.PODEMOS],
+							[ "COMPROMIS",likes_por_partido.COMPROMIS],
+							[ "VOX",likes_por_partido.VOX]
 						];
-						var total_likes = dict_likes.PP + dict_likes.PSOE + dict_likes.CIUDADANOS + dict_likes.PODEMOS + dict_likes.COMPROMIS + dict_likes.VOX;
-						var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
-						var title = "Distribución <br> likes <br> capturados <br>("+total_likes+")"
-						put_semi_circle_graph("likes_distribution",title,series_data,"Likes",colors);
+					var total_likes = likes_por_partido.PP + likes_por_partido.PSOE + likes_por_partido.CIUDADANOS +
+					likes_por_partido.PODEMOS + likes_por_partido.COMPROMIS + likes_por_partido.VOX;
+					var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
+					var title = "Distribución <br> likes <br> capturados <br>("+total_likes+")"
+					put_semi_circle_graph("likes_distribution",title,series_data,"Likes",colors);
 					}
 					</script>
 

@@ -5,6 +5,11 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<!-- Latest compiled and minified JS -->
 	<script type = "text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- Libraries to do graphics -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
 	<!-- Library used to do list tables with sorting, filtering and pagination-->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 	<!-- Library used to be able to access to nested atributes using string Eg: User.name -->
@@ -12,7 +17,10 @@
 
 	<!-- SCRIPTS CREADOS -->
 	<script src="{{ url_for('static', filename='js/common/put_footer.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/search/make_table_with_document_link.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_pie_char.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/put_semi_circle_graph.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common/make_table_with_special_doc.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/searched_user_registry/put_special_semi_circle_graph.js') }}"></script>
 	<!-- CSS CREADOS -->
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/footer.css') }}" />
@@ -20,6 +28,15 @@
 
 	<head>
 		<style>
+			@import 'https://code.highcharts.com/css/highcharts.css';
+
+			.graph {
+				height: auto;
+				width: auto;
+				max-width: 800px;
+				max-height: 500px;
+				margin: 0 auto;
+			}
 			.file_img {
 				max-width: 50px;
 				max-height: 50px;
@@ -50,6 +67,9 @@
   				box-shadow: 0 0 20px rgba(0, 0, 0, 1) !important;
 					border-radius: 33px !important;
 					cursor: hand; 
+				}
+				#ex1Slider .slider-selection {
+					background: #BABABA;
 				}
 		</style>
 
@@ -156,8 +176,94 @@
 								</table>
 						</div>
 			</div>
-				<script>put_footer()</script>
-				<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
+
+			<br><br><br><br>
+
+
+			<div id="primera_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+				<div>
+				<div class="mb-1 graph" id="pie_char_verified"></div>
+			</div>
+				<div class="graph" align="center">
+						<div class="mb-1 graph" id="pie_char_by_num_likes">
+								
+						</div>
+						<label id="customRange1">Mostrar usuarios que dieron 1 o más likes</label>
+						<input id="ex1" type="range" class="custom-range" id="customRange1" oninput="showVal(this.value)" onchange="showVal(this.value)" value=1 min="1" max="50" step="1">
+						
+				</div>			
+				
+				
+			</div>
+
+
+
+			<script>
+				var dict = {{ registry_dict|tojson }};
+				var total_usuarios = {{ num_verified }}+ {{ num_no_verified }}
+				var title1 = "Distribución usuarios que dieron like ("+ total_usuarios +")";
+				put_pie_char("pie_char_verified",title1,[["usuarios no verificados", {{ num_no_verified }}],[ "usuarios verificados",{{ num_verified }}]])
+				var dict_by_num_likes = {{ registry_dict_by_num_likes }}
+				var list_by_num_likes = []
+				for(key in dict_by_num_likes){
+					list_by_num_likes.push([key +" likes dados",dict_by_num_likes[key]])
+				}
+				put_pie_char("pie_char_by_num_likes","Distribución de usuarios por el número de likes que dieron a los tweets del usuario",list_by_num_likes)
+
+			</script>
+
+			<script>
+					function showVal(newVal){
+						document.getElementById("customRange1").innerHTML="Mostrar usuarios que dieron " + newVal + " o más likes";
+					
+					var dict_by_num_likes = {{ registry_dict_by_num_likes }}
+					var list_by_num_likes = []
+					for(key in dict_by_num_likes){
+						if(key>= newVal){
+							list_by_num_likes.push([key +" likes dados",dict_by_num_likes[key]])
+						}
+					}
+					put_pie_char("pie_char_by_num_likes","Distribución de usuarios por el número de likes que dieron a los tweets del usuario",list_by_num_likes)
+				}
+			</script>
+			<br><br><br><br>
+
+			<div id="cuarta_fila" class="d-flex w-100 mb-3 justify-content-between flex-row">
+					<div class="mb-1 graph" id="num_tweets_distribution"></div>
+					<div class="mb-1 graph" id="antiquity_distribution"></div>
+			</div>
+
+			<script>
+				var dict_by_num_tweets = {{ registry_dict_by_num_tweets|tojson }}
+				var registry_dict_by_antiquity = {{ registry_dict_by_antiquity|tojson }}
+				var series_data = [];
+				for(key in dict_by_num_tweets){
+					series_data.push([key ,dict_by_num_tweets[key]])
+				}
+				put_special_semi_circle_graph("num_tweets_distribution","Distribución <br> usuarios <br> que dieron like <br> por tweets publicados",series_data,"");
+				series_data = [];
+				for(key in registry_dict_by_antiquity){
+					series_data.push([key ,registry_dict_by_antiquity[key]])
+				}
+				put_special_semi_circle_graph("antiquity_distribution","Distribución <br> usuarios <br> que dieron like <br> por antiguedad",series_data,"");
+			</script>
+
+<br><br><br><br>
+<h3>Usuarios que dieron like a {{ name }}</h3>
+<div id="usuarios_que_dieron_like">
+	<table class="table table-striped table-dark aux_header" id="tabla_usuarios_que_dieron_like_header">
+	</table>
+	<table class="table table-striped list table-dark" id="tabla_usuarios_que_dieron_like">
+	</table>
+	<ul class="pagination"></ul>
+</div>
+<script>make_table_with_special_doc("usuarios_que_dieron_like","tabla_usuarios_que_dieron_like_header","tabla_usuarios_que_dieron_like",['user_screen_name','verified',"tweets","joined","num_likes"],{{ registry_dict|tojson }})</script>
+
+
+		
+
+			<script>put_footer()</script>
+			<script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
 
 
 	</body>	

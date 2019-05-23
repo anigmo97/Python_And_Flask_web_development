@@ -6,6 +6,8 @@ import sys
 import json
 import mongo_conector_for_flask as mongo_conector
 from django.utils.safestring import mark_safe
+from dateutil.relativedelta import relativedelta
+import datetime
 import wikipedia
 try: 
     from BeautifulSoup import BeautifulSoup
@@ -27,7 +29,7 @@ def get_mongo_special_files_dict():
 	docs_dict["searched_users_file"] = mongo_conector.get_searched_users_file(mongo_conector.current_collection)
 	docs_dict["streamming_file"] = mongo_conector.get_streamming_file(mongo_conector.current_collection)
 	docs_dict["likes_list_file"] = mongo_conector.get_likes_list_file(mongo_conector.current_collection)	
-	docs_dict["users_file"] = mongo_conector.get_users_file(mongo_conector.current_collection)
+	docs_dict["users_file"] = {"info":"Deprecated. Now the info is saved in likes_counts_files"}
 	return docs_dict
 
 def get_article_summary(person_name,topic=""):
@@ -160,10 +162,16 @@ def politics_tweets():
 				else:
 					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))	
 	linked_likes_info=linked_aux
+	captured_likes_por_partido=mongo_conector.get_num_of_captured_likes_per_party(mongo_conector.current_collection)
+	print(captured_likes_por_partido)
 		
 	try:
-		return render_template("politics_tweets.html",collections=collections,collection=mongo_conector.current_collection,**special_doc_dict,
-		likes_por_partido=likes_por_partido,politicos_por_partido=politicos_por_partido,linked_likes_info=linked_likes_info)
+		return render_template("politics_tweets.html",collections=collections,
+		collection=mongo_conector.current_collection,**special_doc_dict,
+		likes_por_partido=likes_por_partido, # likes de los tweets de un partido (no todos son capturados)
+		captured_likes_por_partido =captured_likes_por_partido ,
+		politicos_por_partido=politicos_por_partido,
+		linked_likes_info=linked_likes_info)
 	except Exception as e:
 		return str(e)
 
@@ -236,6 +244,36 @@ def show_tweet_search_result(path):
 	except Exception as e:
 		return str(e)
 
+def get_range(value):
+	if value>= 0 and value < 50:
+		return "Menos de 50 tweets"
+	elif value>= 50 and value < 100:
+		return "Entre 50 y 99 tweets"
+	elif value >= 100 and value < 250:
+		return "Entre 100 y 249 tweets"
+	elif value >=500 and value < 1000:
+		return "Entre 500 y 999 tweets"
+	else:
+		return "1000 tweets o más"
+
+def get_antiquity_range(date_str): 
+	input_format="%Y/%m/%d %H:%M"
+	date_time_obj = datetime.datetime.strptime(date_str,input_format)
+	date_time_obj_now = datetime.datetime.now()
+	if (date_time_obj + relativedelta(months=3) )>date_time_obj_now:
+		return "Menos de tres meses"
+	elif (date_time_obj + relativedelta(months=6) )>date_time_obj_now:
+		return "Entre 3 y 6 meses"
+	elif (date_time_obj + relativedelta(months=12) )>date_time_obj_now:
+		return "Entre 6 y 12 meses"
+	elif (date_time_obj + relativedelta(months=24) )>date_time_obj_now:
+		return "Entre 1 y 2 años"
+	elif (date_time_obj + relativedelta(months=36) )>date_time_obj_now:
+		return "Entre 2 y 3 años"
+	else:
+		return "Más de 3 años"
+
+
 @app.route('/searched_user_registry/',defaults={'path':''})
 @app.route('/searched_user_registry/<path:path>')
 def show_searched_user_registry(path): 
@@ -250,10 +288,37 @@ def show_searched_user_registry(path):
 	resumen,url = get_article_summary(name,"politica españa")
 	searched_user_registry = mongo_conector.get_searched_users_file(mongo_conector.current_collection)[screen_name]
 	num_captured_likes = mongo_conector.get_num_of_captured_likes_for_user(screen_name.lower(),mongo_conector.current_collection)
+	registry_dict,num_verified,num_no_verified = mongo_conector.get_searched_user_registry_info_for_ui(screen_name,mongo_conector.current_collection)
+	registry_dict_by_num_likes = {}
+	registry_dict_by_num_tweets = {}
+	registry_dict_by_antiquity = {}
+	for e in registry_dict:
+		print(registry_dict[e])
+		if registry_dict[e]["num_likes"] in registry_dict_by_num_likes:
+			registry_dict_by_num_likes[registry_dict[e]["num_likes"]] += 1
+		else:
+			registry_dict_by_num_likes[registry_dict[e]["num_likes"]] = 1
+
+		correct_range = get_range(registry_dict[e]["tweets"])
+		if  correct_range in registry_dict_by_num_tweets:
+			registry_dict_by_num_tweets[correct_range] += 1
+		else:
+			registry_dict_by_num_tweets[correct_range] = 1
+
+		correct_range = get_antiquity_range(registry_dict[e]["joined"])
+		if correct_range in registry_dict_by_antiquity:
+			registry_dict_by_antiquity[correct_range] +=1
+		else:
+			registry_dict_by_antiquity[correct_range] = 1
+
+
+
 	try:
 		return render_template("searched_user_registry.html", collections=collections,collection=mongo_conector.current_collection,
 		name=name,screen_name=screen_name,resumen=resumen,searched_user_registry=searched_user_registry,
-		num_captured_likes=num_captured_likes,url=url)
+		num_captured_likes=num_captured_likes,url=url,registry_dict=registry_dict,num_verified=num_verified,
+		num_no_verified=num_no_verified,registry_dict_by_num_likes=registry_dict_by_num_likes,registry_dict_by_num_tweets=registry_dict_by_num_tweets,
+		registry_dict_by_antiquity=registry_dict_by_antiquity)
 	except Exception as e:
 		return str(e)
 

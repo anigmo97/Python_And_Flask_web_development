@@ -22,9 +22,9 @@ query_file_id = "query_file_id"
 streamming_file_id = "streamming_file_id"
 searched_users_file_id = "searched_users_file_id"
 likes_list_file_id = "likes_list_file_id"
-users_file_id = "users_file_id"
+#users_file_id = "users_file_id"
 
-special_doc_ids = [statistics_file_id,query_file_id,streamming_file_id,searched_users_file_id,likes_list_file_id,users_file_id]
+special_doc_ids = [statistics_file_id,query_file_id,streamming_file_id,searched_users_file_id,likes_list_file_id]
 
 
 
@@ -62,7 +62,7 @@ def get_tweet_dict_by_tweet_id_using_regex(regex,collection):
 
 def get_likes_info_for_flask(collection,limit=0):
     """Returns a list of tweets from the collection that have its 'likes_info.likes_count_updated' field set to False"""
-    lista_tweets = list(db[collection].find({"has_likes_info" : True,'_id': {'$nin': special_doc_ids }},{"likes_info":True}).limit(limit))
+    lista_tweets = list(db[collection].find({"has_likes_info" : True,'_id': {'$nin': special_doc_ids,"$regex":"^(?!likes_count_file)" }},{"likes_info":True}).limit(limit))
     print("[LIKES INFO FOR FLASK] {} tweets retrieved".format(len(lista_tweets)))
     return lista_tweets
 
@@ -91,6 +91,9 @@ def get_likes_count_files_dict_with_id_as_key(collection):
     cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
     return { x["_id"] : x for x in cursor_resultados}
 
+def get_tweets_of_a_user_from_collecton(screen_name,collection):
+    return db[collection].find({"user.screen_name": screen_name, "has_likes_info":True})
+
 def get_num_of_captured_likes_for_user(screen_name,collection):
     cursor_resultados = db[collection].find({"user.screen_name": screen_name})
     likes_capturados = 0
@@ -98,6 +101,63 @@ def get_num_of_captured_likes_for_user(screen_name,collection):
         if e["has_likes_info"]:
             likes_capturados+= len(e["likes_info"]["users_who_liked"])
     return likes_capturados
+
+def get_num_of_captured_likes_per_party(collection):
+    likes_count_files = get_likes_count_files(collection)
+    captured_likes_tweets = {
+        "PP":0,
+        "PSOE":0,
+        "PODEMOS":0,
+        "CIUDADANOS":0,
+        "VOX":0,
+        "COMPROMIS":0
+    }
+    for e in likes_count_files:
+        for x in e:
+            if x != "_id":
+                registry = e[x]
+                captured_likes_tweets["PP"] += registry["likes_to_PP"]
+                captured_likes_tweets["PSOE"] += registry["likes_to_PSOE"]
+                captured_likes_tweets["PODEMOS"] +=registry["likes_to_PODEMOS"]
+                captured_likes_tweets["CIUDADANOS"] += registry["likes_to_CIUDADANOS"]
+                captured_likes_tweets["COMPROMIS"]+= registry["likes_to_COMPROMIS"]
+                captured_likes_tweets["VOX"] +=  registry["likes_to_VOX"]
+
+    return captured_likes_tweets
+
+
+def get_searched_user_registry_info_for_ui(screen_name,collection):
+    cursor_resultados = get_tweets_of_a_user_from_collecton(screen_name,collection)
+    users_dict = {}
+
+    for tweet in cursor_resultados:
+        for user_id in tweet["likes_info"]["users_who_liked"]:
+            if tweet["likes_info"]["users_who_liked"][user_id]["counted"]:
+                if user_id in users_dict:
+                    users_dict[user_id]["num_likes"] += 1
+                else:
+                    users_dict[user_id]={}
+                    users_dict[user_id]["user_id"] = tweet["likes_info"]["users_who_liked"][user_id]["user_id"]
+                    users_dict[user_id]["user_screen_name"] = tweet["likes_info"]["users_who_liked"][user_id]["user_screen_name"]
+                    users_dict[user_id]["num_likes"] = 1
+    
+    likes_count_files_list = get_likes_count_files(collection)
+    num_verified = 0
+    num_no_verified = 0
+    for user_id in users_dict:
+        for f in likes_count_files_list:
+            if user_id in f:
+                print(f[user_id])
+                users_dict[user_id]["joined"] = f[user_id]["joined"]
+                users_dict[user_id]["verified"] = f[user_id]["verified"]
+                if f[user_id]["verified"]:
+                    num_verified+=1
+                else:
+                    num_no_verified += 1
+                users_dict[user_id]["tweets"] = f[user_id]["tweets"]
+    
+    return users_dict,num_verified,num_no_verified
+
 
 #########################################################################################################################################
 ############################### SPECIAL DOCS MANAGEMENT #################################################################################
@@ -116,7 +176,6 @@ def get_log_dict_for_special_file_id(file_id):
         query_file_id : { "upper_name" : "QUERY_FILE", "file_aux" :"Fichero de querys" , "file_id" : query_file_id },
         streamming_file_id : { "upper_name" : "STREAMMING_FILE", "file_aux" :"Fichero de busquedas por streamming" , "file_id" : streamming_file_id },
         searched_users_file_id : { "upper_name" : "SEARCHED_USERS_FILE", "file_aux" :"Fichero de usuarios buscados" , "file_id" : searched_users_file_id },
-        users_file_id : { "upper_name" : "USERS_FILE", "file_aux" :"Fichero de usuarios" , "file_id" : users_file_id },
         likes_list_file_id : { "upper_name" : "LIKES_FILE", "file_aux" :"Fichero de likes" , "file_id" : likes_list_file_id }
         
     }
@@ -154,8 +213,6 @@ def get_searched_users_file(collection):
 def get_likes_list_file(collection):
     return _get_special_file(collection,likes_list_file_id)
 
-def get_users_file(collection):
-    return _get_special_file(collection,users_file_id)
 
 
 #########################################################################################################################################
