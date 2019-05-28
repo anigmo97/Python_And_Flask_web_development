@@ -27,6 +27,7 @@
 	<script src="{{ url_for('static', filename='js/politics/get_num_tweets_by_party.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/politics/get_num_likes_by_party.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/politics/make_table_with_percentage_bar.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/politics/make_table_with_multiple_special_doc.js') }}"></script>
 
 	<!-- CSS CREADOS -->
 	<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='css/make_tables.css') }}" />
@@ -227,7 +228,7 @@
 
 			<script>
 					var likes_por_partido = {{ captured_likes_por_partido|tojson }}
-					alert(JSON.stringify(likes_por_partido))
+					//alert(JSON.stringify(likes_por_partido));
 					if (likes_por_partido != null){
 					var series_data = [];
 					var series_data = [
@@ -281,6 +282,84 @@
 		put_bar_char("likes_dividido_tweets","Likes / tweets",categories2,[{data: data2}],colors);
 		
 	</script>
+	
+<!-- SECCION SIMULADOR VOTOS-->
+
+<!-- SECCION GRAFICOS USUARIOS POR PARTIDO-->
+<br><br>
+<h5>USUARIOS QUE DIERON LIKE A TWEETS DE PP</h5>
+<div id="usuarios_PP" class="d-flex w-100 mb-3 justify-content-between flex-row" >
+	<div class="mb-1 graph" id="usuarios_PP_antiguedad"></div>
+	<div class="mb-1 graph" id="usuarios_PP_tweets"></div>
+	<div class="mb-1 graph" id="usuarios_PP_verified"></div>
+</div>
+<br><br>
+<h5>USUARIOS QUE DIERON LIKE A TWEETS DE PSOE</h5>
+<div id="usuarios_PSOE" class="d-flex w-100 mb-3 justify-content-between flex-row" >
+	<div class="mb-1 graph" id="usuarios_PSOE_antiguedad"></div>
+	<div class="mb-1 graph" id="usuarios_PSOE_tweets"></div>
+	<div class="mb-1 graph" id="usuarios_PSOE_verified"></div>
+</div>
+<br><br>
+<h5>USUARIOS QUE DIERON LIKE A TWEETS DE PODEMOS</h5>
+<div id="usuarios_PODEMOS" class="d-flex w-100 mb-3 justify-content-between flex-row" >
+	<div class="mb-1 graph" id="usuarios_PODEMOS_antiguedad"></div>
+	<div class="mb-1 graph" id="usuarios_PODEMOS_tweets"></div>
+	<div class="mb-1 graph" id="usuarios_PODEMOS_verified"></div>
+</div>
+<br><br>
+<h5>USUARIOS QUE DIERON LIKE A TWEETS DE CIUDADANOS</h5>
+<div id="usuarios_CIUDADANOS" class="d-flex w-100 mb-3 justify-content-between flex-row" >
+	<div class="mb-1 graph" id="usuarios_CIUDADANOS_antiguedad"></div>
+	<div class="mb-1 graph" id="usuarios_CIUDADANOS_tweets"></div>
+	<div class="mb-1 graph" id="usuarios_CIUDADANOS_verified"></div>
+</div>
+<br><br>
+<h5>USUARIOS QUE DIERON LIKE A TWEETS DE COMPROMIS</h5>
+<div id="usuarios_COMPROMIS" class="d-flex w-100 mb-3 justify-content-between flex-row" >
+	<div class="mb-1 graph" id="usuarios_COMPROMIS_antiguedad"></div>
+	<div class="mb-1 graph" id="usuarios_COMPROMIS_tweets"></div>
+	<div class="mb-1 graph" id="usuarios_COMPROMIS_verified"></div>
+</div>
+<br><br>
+<h5>USUARIOS QUE DIERON LIKE A TWEETS DE VOX</h5>
+<div id="usuarios_VOX" class="d-flex w-100 mb-3 justify-content-between flex-row" >
+	<div class="mb-1 graph" id="usuarios_VOX_antiguedad"></div>
+	<div class="mb-1 graph" id="usuarios_VOX_tweets"></div>
+	<div class="mb-1 graph" id="usuarios_VOX_verified"></div>
+</div>
+
+
+	<script>
+		var registry_dict_by_verified = {{ registry_dict_by_verified|tojson }}; 
+		var registry_dict_by_num_tweets = {{ registry_dict_by_num_tweets|tojson }}
+		var registry_dict_by_antiquity = {{ registry_dict_by_antiquity|tojson }};	
+		var parties = ["PP","PSOE","CIUDADANOS","PODEMOS","COMPROMIS","VOX"]
+		var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
+		var series_data;
+		var current_party;
+		for( var index in parties){
+			current_party = parties[index];
+			series_data = [];
+			for(var key in registry_dict_by_verified[current_party]){
+				series_data.push([key,registry_dict_by_verified[current_party][key]])
+			}
+			put_semi_circle_graph("usuarios_"+current_party+"_verified","Usuarios que<br>dieron like a<br>"+current_party+ "<br>segun tipo de cuenta",series_data,"Usuarios","");
+			series_data = [];
+			for(var key in registry_dict_by_num_tweets[current_party]){
+				series_data.push([key,registry_dict_by_num_tweets[current_party][key]])
+			}
+			put_semi_circle_graph("usuarios_"+current_party+"_tweets","Usuarios que<br>dieron like a<br>"+current_party+ "<br>por número de<br>tweets creados",series_data,"Usuarios","");
+			series_data = [];
+			for(var key in registry_dict_by_antiquity[current_party]){
+				series_data.push([key,registry_dict_by_antiquity[current_party][key]])
+			}
+			put_semi_circle_graph("usuarios_"+current_party+"_antiguedad","Usuarios que<br>dieron like a<br>"+current_party+ "<br>por antiguedad",series_data,"Usuarios","");
+		}
+		
+
+					
+	</script>
 
 
 <!-- SECCION TABLA LIKES POR USUARIO  ------------------------------------------------------------------------------------>
@@ -294,9 +373,9 @@
 				</table>
 				<ul class="pagination"></ul>
 			</div>
-			<script>make_table_with_special_doc('likes_capturados','tabla_likes_capturados_header_container','tabla_likes_capturados',
+			<script>make_table_with_multiple_special_doc('likes_capturados','tabla_likes_capturados_header_container','tabla_likes_capturados',
 			['user_screen_name','likes_to_PP','likes_to_PSOE','likes_to_PODEMOS','likes_to_CIUDADANOS','likes_to_COMPROMIS','likes_to_VOX','last_like_registered'],
-			{{ users_file|tojson }})
+			{{ likes_count_files|tojson }})
 			</script>
 
 <!-- SECCION LIKES CAPTURADOS POR TWEET  ------------------------------------------------------------------------------------>

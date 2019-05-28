@@ -91,6 +91,36 @@ def get_main_image2(person_name,topic=""):
 	print(main_image_url)
 	return main_image_url
 
+def get_likes_per_party_info():
+	likes_count_files =mongo_conector.get_likes_count_files(mongo_conector.current_collection)
+	captured_likes_tweets = {"PP":0,"PSOE":0,"PODEMOS":0,"CIUDADANOS":0,"VOX":0,"COMPROMIS":0}
+	registry_dict_by_verified = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
+	registry_dict_by_num_tweets = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
+	registry_dict_by_antiquity = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
+	for like_count_file in likes_count_files:
+		for e in like_count_file:
+			if e !="_id":
+				registry_dict = like_count_file[e]
+				print(registry_dict)
+				joined = get_antiquity_range(registry_dict.get("joined",None))
+				tweets_metric = get_range(registry_dict.get("tweets",0))
+
+				if registry_dict.get("verified",False):
+					verified = "verified"
+				else:
+					verified = "not verified"
+
+
+				for party in ["PP","PSOE","PODEMOS","CIUDADANOS","COMPROMIS","VOX"]:
+					if registry_dict["likes_to_" + party] >0:
+						captured_likes_tweets[party] += registry_dict["likes_to_" + party]
+						registry_dict_by_verified[party][verified] = registry_dict_by_verified[party].get(verified,0) + 1
+						registry_dict_by_num_tweets[party][tweets_metric] = registry_dict_by_num_tweets[party].get(tweets_metric,0) + 1
+						registry_dict_by_antiquity[party][joined] = registry_dict_by_antiquity[party].get(joined,0) + 1
+
+	return captured_likes_tweets,registry_dict_by_verified,registry_dict_by_num_tweets,registry_dict_by_antiquity
+
+
 app = Flask(__name__)
 def signal_handler_control_c(sig, frame):
 	print('Ctrl+C handled')
@@ -162,7 +192,7 @@ def politics_tweets():
 				else:
 					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))	
 	linked_likes_info=linked_aux
-	captured_likes_por_partido=mongo_conector.get_num_of_captured_likes_per_party(mongo_conector.current_collection)
+	captured_likes_por_partido,registry_dict_by_verified,registry_dict_by_num_tweets,registry_dict_by_antiquity = get_likes_per_party_info()
 	print(captured_likes_por_partido)
 		
 	try:
@@ -171,7 +201,12 @@ def politics_tweets():
 		likes_por_partido=likes_por_partido, # likes de los tweets de un partido (no todos son capturados)
 		captured_likes_por_partido =captured_likes_por_partido ,
 		politicos_por_partido=politicos_por_partido,
-		linked_likes_info=linked_likes_info)
+		likes_count_files=mongo_conector.get_likes_count_files_dict(mongo_conector.current_collection),
+		linked_likes_info=linked_likes_info,
+		registry_dict_by_verified=registry_dict_by_verified,
+		registry_dict_by_num_tweets=registry_dict_by_num_tweets,
+		registry_dict_by_antiquity=registry_dict_by_antiquity
+		)
 	except Exception as e:
 		return str(e)
 
@@ -256,7 +291,9 @@ def get_range(value):
 	else:
 		return "1000 tweets o más"
 
-def get_antiquity_range(date_str): 
+def get_antiquity_range(date_str):
+	if date_str == None:
+		return "desconocido"
 	input_format="%Y/%m/%d %H:%M"
 	date_time_obj = datetime.datetime.strptime(date_str,input_format)
 	date_time_obj_now = datetime.datetime.now()
