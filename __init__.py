@@ -97,6 +97,7 @@ def get_likes_per_party_info():
 	registry_dict_by_verified = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
 	registry_dict_by_num_tweets = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
 	registry_dict_by_antiquity = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
+	votantes_por_partido = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
 	for like_count_file in likes_count_files:
 		for e in like_count_file:
 			if e !="_id":
@@ -109,6 +110,19 @@ def get_likes_per_party_info():
 					verified = "verified"
 				else:
 					verified = "not verified"
+				
+				print("\n\n\n{} {} {} ".format(joined,verified,tweets_metric))
+
+				likes_per_party_list = [registry_dict["likes_to_PP"],registry_dict["likes_to_PSOE"],registry_dict["likes_to_PODEMOS"],registry_dict["likes_to_CIUDADANOS"],registry_dict["likes_to_COMPROMIS"],registry_dict["likes_to_VOX"]]
+				max_amount_likes_to_party = max(likes_per_party_list)
+				most_voted_party = ["PP","PSOE","PODEMOS","CIUDADANOS","COMPROMIS","VOX"][likes_per_party_list.index(max_amount_likes_to_party)]
+				if joined not in votantes_por_partido[most_voted_party]:
+					votantes_por_partido[most_voted_party][joined] = {}
+				if verified not in votantes_por_partido[most_voted_party][joined]:
+					votantes_por_partido[most_voted_party][joined][verified] = {}
+				if tweets_metric not in votantes_por_partido[most_voted_party][joined][verified]:
+					votantes_por_partido[most_voted_party][joined][verified][tweets_metric] = []
+				votantes_por_partido[most_voted_party][joined][verified][tweets_metric].append(max_amount_likes_to_party)
 
 
 				for party in ["PP","PSOE","PODEMOS","CIUDADANOS","COMPROMIS","VOX"]:
@@ -118,7 +132,7 @@ def get_likes_per_party_info():
 						registry_dict_by_num_tweets[party][tweets_metric] = registry_dict_by_num_tweets[party].get(tweets_metric,0) + 1
 						registry_dict_by_antiquity[party][joined] = registry_dict_by_antiquity[party].get(joined,0) + 1
 
-	return captured_likes_tweets,registry_dict_by_verified,registry_dict_by_num_tweets,registry_dict_by_antiquity
+	return captured_likes_tweets,registry_dict_by_verified,registry_dict_by_num_tweets,registry_dict_by_antiquity,votantes_por_partido
 
 
 app = Flask(__name__)
@@ -192,8 +206,9 @@ def politics_tweets():
 				else:
 					likes_por_partido[special_doc_dict["searched_users_file"][user_sreen_name]["partido"]] += int(aux.replace(',',''))	
 	linked_likes_info=linked_aux
-	captured_likes_por_partido,registry_dict_by_verified,registry_dict_by_num_tweets,registry_dict_by_antiquity = get_likes_per_party_info()
+	captured_likes_por_partido,registry_dict_by_verified,registry_dict_by_num_tweets,registry_dict_by_antiquity,votantes_por_partido = get_likes_per_party_info()
 	print(captured_likes_por_partido)
+	print(json.dumps(votantes_por_partido))
 		
 	try:
 		return render_template("politics_tweets.html",collections=collections,
@@ -205,7 +220,8 @@ def politics_tweets():
 		linked_likes_info=linked_likes_info,
 		registry_dict_by_verified=registry_dict_by_verified,
 		registry_dict_by_num_tweets=registry_dict_by_num_tweets,
-		registry_dict_by_antiquity=registry_dict_by_antiquity
+		registry_dict_by_antiquity=registry_dict_by_antiquity,
+		votantes_por_partido = votantes_por_partido
 		)
 	except Exception as e:
 		return str(e)
@@ -286,6 +302,8 @@ def get_range(value):
 		return "Entre 50 y 99 tweets"
 	elif value >= 100 and value < 250:
 		return "Entre 100 y 249 tweets"
+	elif value>= 250 and value < 500:
+		return "Entre 250 y 499 tweets"
 	elif value >=500 and value < 1000:
 		return "Entre 500 y 999 tweets"
 	else:

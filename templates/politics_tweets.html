@@ -284,6 +284,191 @@
 	</script>
 	
 <!-- SECCION SIMULADOR VOTOS-->
+<br><br>
+<h5>SIMULADOR DE VOTOS</h5>
+<div class="graph" align="center">
+	<div class="mb-1 graph" id="pie_char_by_num_likes">
+
+	</div>
+	<label id="customRange1">Considerar votante con 1 o más likes dados a un partido</label>
+	<input id="ex1" type="range" class="custom-range" oninput="showVal(this.value)" onchange="showVal1(this.value)" value=1 min="1" max="100" step="1">
+
+	<br>
+	<br>
+	<label >Considerar usuarios por tipo de cuenta:</label>
+	<div class="d-flex w-100 mb-3 justify-content-center flex-row">
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="notVerifiedCheckbox" checked onclick="calc();">
+			<label class="custom-control-label" for="notVerifiedCheckbox">Cuentas no verificadas</label>
+		</div>
+
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="verifiedCheckbox" checked onclick="calc();">
+			<label class="custom-control-label" for="verifiedCheckbox">Cuentas verificadas</label>
+		</div>
+	</div>
+	<br>
+	 <label >Considerar usuarios por tweets publicados:</label>
+	<div class="d-flex w-100 mb-3 justify-content-center flex-row">
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="tweets1" checked onclick="calc();">
+			<label class="custom-control-label" for="tweets1">Menos de 50 tweets</label>
+		</div>
+
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="tweets2" checked onclick="calc();">
+			<label class="custom-control-label" for="tweets2">Entre 50 y 99 tweets</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="tweets3" checked onclick="calc();">
+			<label class="custom-control-label" for="tweets3">Entre 100 y 249 tweets</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="tweets4" checked onclick="calc();">
+			<label class="custom-control-label" for="tweets4">Entre 250 y 499 tweets</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="tweets5" checked onclick="calc();">
+			<label class="custom-control-label" for="tweets5">Entre 500 y 999 tweets</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="tweets6" checked onclick="calc();">
+			<label class="custom-control-label" for="tweets6">1000 tweets o más</label>
+		</div>
+	</div>
+	<label >Considerar usuarios por antiguedad:</label>
+	<div class="d-flex w-100 mb-3 justify-content-center flex-row">
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="antiquity1" checked onclick="calc();">
+			<label class="custom-control-label" for="antiquity1">Menos de tres meses</label>
+		</div>
+
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="antiquity2" checked onclick="calc();">
+			<label class="custom-control-label" for="antiquity2">Entre 3 y 6 meses</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="antiquity3" checked onclick="calc();">
+			<label class="custom-control-label" for="antiquity3">Entre 6 y 12 meses</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="antiquity4" checked onclick="calc();">
+			<label class="custom-control-label" for="antiquity4">Entre 1 y 2 años</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="antiquity5" checked onclick="calc();">
+			<label class="custom-control-label" for="antiquity6">Entre 2 y 3 años</label>
+		</div>
+		<div class="custom-control custom-checkbox px-4">
+			<input type="checkbox" class="custom-control-input" id="antiquity6" checked onclick="calc();">
+			<label class="custom-control-label" for="antiquity6">Más de 3 años</label>
+		</div>
+	</div>
+
+
+</div>
+
+<script>
+		function showVal1(newVal){
+			document.getElementById("customRange1").innerHTML="Considerar votantes con " + newVal + " o más likes";
+			calc();
+	}
+</script>
+<script>
+	function calc(){
+		var account_types = []
+		if(document.getElementById('notVerifiedCheckbox').checked){
+			account_types.push("not verified")
+		}
+		if(document.getElementById('verifiedCheckbox').checked){
+			account_types.push("verified")
+		}
+
+		var tweets_nums = []
+		if(document.getElementById('tweets1').checked){
+			tweets_nums.push("Menos de 50 tweets")
+		}
+		if(document.getElementById('tweets2').checked){
+			tweets_nums.push("Entre 50 y 99 tweets")
+		}
+		if(document.getElementById('tweets3').checked){
+			tweets_nums.push("Entre 100 y 249 tweets")
+		}
+		if(document.getElementById('tweets4').checked){
+			tweets_nums.push("Entre 250 y 499 tweets")
+		}
+		if(document.getElementById('tweets5').checked){
+			tweets_nums.push("Entre 500 y 999 tweets")
+		}
+		if(document.getElementById('tweets6').checked){
+			tweets_nums.push("1000 tweets o más")
+		}
+
+		var users_antiquity = [];
+		if(document.getElementById('antiquity1').checked){
+			users_antiquity.push("Menos de tres meses")
+		}
+		if(document.getElementById('antiquity2').checked){
+			users_antiquity.push("Entre 3 y 6 meses")
+		}
+		if(document.getElementById('antiquity3').checked){
+			users_antiquity.push("Entre 6 y 12 meses")
+		}
+		if(document.getElementById('antiquity4').checked){
+			users_antiquity.push("Entre 1 y 2 años")
+		}
+		if(document.getElementById('antiquity5').checked){
+			users_antiquity.push("Entre 2 y 3 años")
+		}
+		if(document.getElementById('antiquity6').checked){
+			users_antiquity.push("Más de 3 años")
+		}
+
+
+		var series_data = [];
+		var min_likes = document.getElementById('ex1').value;
+		var parties = ["PP", "PSOE", "PODEMOS", "CIUDADANOS", "COMPROMIS", "VOX"]
+		var votantes_por_partido = {{ votantes_por_partido|tojson }};
+	var party, joined, verified, tweets, lista_likes, party_counter;
+	for (var index in parties) {
+		party = parties[index]
+		party_counter = 0;
+		for (var joined_index in users_antiquity) {
+			joined = users_antiquity[joined_index]
+			for (var verified_index in account_types) {
+				verified = account_types[verified_index]
+				for (var index_tweets in tweets_nums) {
+					console.log(tweets_nums)
+					tweets = tweets_nums[index_tweets]
+					console.log(tweets)
+					try {
+
+
+						lista_likes = votantes_por_partido[party][joined][verified][tweets]
+						for (var like_index in lista_likes) {
+							if (lista_likes[like_index] >= min_likes) {
+								party_counter++;
+							}
+						}
+					} catch (error) {
+						
+						//console.error(error)
+					}
+				}
+			}
+		}
+		series_data.push([party, party_counter])
+	}
+	var total_votos_computados = 0;
+	for(var index in series_data){
+		total_votos_computados+= series_data[index][1]
+	}
+	var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
+	var title = "Distribución <br> votos por <br> partido <br>(Votos :"+total_votos_computados+")"
+	put_semi_circle_graph("pie_char_by_num_likes",title,series_data,"Likes",colors);
+
+	}
+</script>
 
 <!-- SECCION GRAFICOS USUARIOS POR PARTIDO-->
 <br><br>
@@ -429,7 +614,7 @@
 	</script>
 
 <br><br>
-<script>put_footer()</script>
+<script>calc();put_footer()</script>
 <script src="{{ url_for('static', filename='js/common/get_dropdown_selection.js') }}"></script>
 <script src="{{ url_for('static', filename='js/politics/do_member_clickable.js') }}"></script>
 
