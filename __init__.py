@@ -92,13 +92,13 @@ def get_main_image2(person_name,topic=""):
 	return main_image_url
 
 def get_likes_per_party_info():
-	likes_count_files =mongo_conector.get_likes_count_files(mongo_conector.current_collection)
+	likes_count_files_cursor =mongo_conector.get_likes_count_files_cursor(mongo_conector.current_collection)
 	captured_likes_tweets = {"PP":0,"PSOE":0,"PODEMOS":0,"CIUDADANOS":0,"VOX":0,"COMPROMIS":0}
 	registry_dict_by_verified = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
 	registry_dict_by_num_tweets = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
 	registry_dict_by_antiquity = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
 	votantes_por_partido = {"PP":{},"PSOE":{},"PODEMOS":{},"CIUDADANOS":{},"COMPROMIS":{},"VOX":{}}
-	for like_count_file in likes_count_files:
+	for like_count_file in likes_count_files_cursor:
 		for e in like_count_file:
 			if e !="_id":
 				registry_dict = like_count_file[e]
@@ -310,7 +310,7 @@ def get_range(value):
 		return "1000 tweets o más"
 
 def get_antiquity_range(date_str):
-	if date_str == None:
+	if date_str == None or date_str == "desconocido":
 		return "desconocido"
 	input_format="%Y/%m/%d %H:%M"
 	date_time_obj = datetime.datetime.strptime(date_str,input_format)
@@ -336,10 +336,12 @@ def show_searched_user_registry(path):
 		path = path[0:-1]
 	try:
 		splitted_path = path.split("&")
+		print(path)
+		print(splitted_path)
 		name = splitted_path[0]
 		screen_name = splitted_path[1] 
-	except:
-		pass
+	except Exception as e:
+		print("EXCEP {}".format(e))
 	resumen,url = get_article_summary(name,"politica españa")
 	searched_user_registry = mongo_conector.get_searched_users_file(mongo_conector.current_collection)[screen_name]
 	num_captured_likes = mongo_conector.get_num_of_captured_likes_for_user(screen_name.lower(),mongo_conector.current_collection)
@@ -354,13 +356,13 @@ def show_searched_user_registry(path):
 		else:
 			registry_dict_by_num_likes[registry_dict[e]["num_likes"]] = 1
 
-		correct_range = get_range(registry_dict[e]["tweets"])
+		correct_range = get_range(registry_dict[e].get("tweets",0))
 		if  correct_range in registry_dict_by_num_tweets:
 			registry_dict_by_num_tweets[correct_range] += 1
 		else:
 			registry_dict_by_num_tweets[correct_range] = 1
 
-		correct_range = get_antiquity_range(registry_dict[e]["joined"])
+		correct_range = get_antiquity_range(registry_dict[e].get("joined",None))
 		if correct_range in registry_dict_by_antiquity:
 			registry_dict_by_antiquity[correct_range] +=1
 		else:

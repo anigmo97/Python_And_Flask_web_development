@@ -76,6 +76,14 @@ def get_collection_names():
 def get_count_of_a_collection(collection):
     return db[collection].count()
 
+def get_number_of_likes_count_files_cursor(collection):
+    """Returns likes count files of  collection"""
+    return db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).count()
+    
+def get_likes_count_files_cursor(collection):
+    """Returns likes count files of  collection"""
+    return db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}})
+
 def get_likes_count_files(collection):
     """Returns likes count files of  collection"""
     cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
@@ -83,12 +91,14 @@ def get_likes_count_files(collection):
 
 def get_likes_count_files_dict(collection):
     """Returns likes count files of  collection"""
-    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    #cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}})
     return { x[0]:x[1] for x in enumerate(cursor_resultados)}
 
 def get_likes_count_files_dict_with_id_as_key(collection):
     """Returns likes count files of  collection"""
-    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    #cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}}).sort("_id",ASCENDING).collation(Collation(locale="es",numericOrdering=True))
+    cursor_resultados = db[(collection)].find({"_id": {"$regex":"^(likes_count_file)"}})
     return { x["_id"] : x for x in cursor_resultados}
 
 def get_tweets_of_a_user_from_collecton(screen_name,collection):
@@ -125,6 +135,9 @@ def get_num_of_captured_likes_per_party(collection):
 
     return captured_likes_tweets
 
+def get_likes_count_files_by_num(num,collection):
+    """Returns likes count files of  collection"""
+    return db[(collection)].find({"_id": {"$regex":"^(likes_count_file_id_{})".format(num)}})[0]
 
 def get_searched_user_registry_info_for_ui(screen_name,collection):
     cursor_resultados = get_tweets_of_a_user_from_collecton(screen_name,collection)
@@ -141,20 +154,21 @@ def get_searched_user_registry_info_for_ui(screen_name,collection):
                     users_dict[user_id]["user_screen_name"] = tweet["likes_info"]["users_who_liked"][user_id]["user_screen_name"]
                     users_dict[user_id]["num_likes"] = 1
     
-    likes_count_files_list = get_likes_count_files(collection)
+    num_of_likes_count_files = get_number_of_likes_count_files_cursor(collection)
     num_verified = 0
     num_no_verified = 0
     for user_id in users_dict:
-        for f in likes_count_files_list:
+        for i in range(num_of_likes_count_files):
+            f = get_likes_count_files_by_num(i,collection)
             if user_id in f:
                 print(f[user_id])
-                users_dict[user_id]["joined"] = f[user_id]["joined"]
-                users_dict[user_id]["verified"] = f[user_id]["verified"]
-                if f[user_id]["verified"]:
+                users_dict[user_id]["joined"] = f[user_id].get("joined","desconocido")
+                users_dict[user_id]["verified"] = f[user_id].get("verified",False)
+                if f[user_id].get("verified",False):
                     num_verified+=1
                 else:
                     num_no_verified += 1
-                users_dict[user_id]["tweets"] = f[user_id]["tweets"]
+                users_dict[user_id]["tweets"] = f[user_id].get("tweets",0)
     
     return users_dict,num_verified,num_no_verified
 

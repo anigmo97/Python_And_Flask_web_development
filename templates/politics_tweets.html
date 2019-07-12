@@ -242,7 +242,8 @@
 					var total_likes = likes_por_partido.PP + likes_por_partido.PSOE + likes_por_partido.CIUDADANOS +
 					likes_por_partido.PODEMOS + likes_por_partido.COMPROMIS + likes_por_partido.VOX;
 					var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
-					var title = "Distribución <br> likes <br> capturados <br>("+total_likes+")"
+					//var title = "Distribución <br> likes <br> capturados <br>("+total_likes+")"
+					var title = "Distribución <br> likes <br> capturados <br>(550207)"
 					put_semi_circle_graph("likes_distribution",title,series_data,"Likes",colors);
 					}
 					</script>
@@ -357,7 +358,7 @@
 		</div>
 		<div class="custom-control custom-checkbox px-4">
 			<input type="checkbox" class="custom-control-input" id="antiquity5" checked onclick="calc();">
-			<label class="custom-control-label" for="antiquity6">Entre 2 y 3 años</label>
+			<label class="custom-control-label" for="antiquity5">Entre 2 y 3 años</label>
 		</div>
 		<div class="custom-control custom-checkbox px-4">
 			<input type="checkbox" class="custom-control-input" id="antiquity6" checked onclick="calc();">
@@ -427,7 +428,7 @@
 
 		var series_data = [];
 		var min_likes = document.getElementById('ex1').value;
-		var parties = ["PP", "PSOE", "PODEMOS", "CIUDADANOS", "COMPROMIS", "VOX"]
+		var parties = ["PP", "PSOE", "CIUDADANOS","PODEMOS", "COMPROMIS", "VOX"]
 		var votantes_por_partido = {{ votantes_por_partido|tojson }};
 	var party, joined, verified, tweets, lista_likes, party_counter;
 	for (var index in parties) {
@@ -465,7 +466,7 @@
 	}
 	var colors = ['#2ECCFA', '#FF0000','#FF8000','#672F6C', '#E65F00' ,'#40FF00']
 	var title = "Distribución <br> votos por <br> partido <br>(Votos :"+total_votos_computados+")"
-	put_semi_circle_graph("pie_char_by_num_likes",title,series_data,"Likes",colors);
+	put_semi_circle_graph("pie_char_by_num_likes",title,series_data,"Usurios",colors);
 
 	}
 </script>

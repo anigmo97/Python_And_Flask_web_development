@@ -155,7 +155,9 @@
 				<div class="mb-1 graph" id="search_type_distribution"></div>
 			</div>
 
-				<script>put_pie_char("pie_char_messages_count","Distribución mensajes recuperados ("+{{ statistics_dict["tweets_count"] }}+")",[["tweets", {{ statistics_dict["tweets_count"] }}],[ "retweets",{{ statistics_dict["retweets_count"] }}]])</script>
+				<script>
+				var total = {{ statistics_dict["tweets_count"] }} + {{ statistics_dict["retweets_count"] }}
+				put_pie_char("pie_char_messages_count","Distribución mensajes recuperados ("+total+")",[["tweets", {{ statistics_dict["tweets_count"] }}],[ "retweets",{{ statistics_dict["retweets_count"] }}]])</script>
 
 
 				<script>

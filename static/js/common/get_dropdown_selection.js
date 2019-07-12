@@ -11,7 +11,7 @@ $('#collection_dropdown_menu').click(function(event) {
 		data: JSON.stringify(current_collection),
 		dataType: "json",
 		 success: function(data){
-			alert(data);
+			//alert(data);
 		 },
 	});
 	
